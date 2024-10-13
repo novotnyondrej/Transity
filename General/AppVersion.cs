@@ -34,7 +34,7 @@ namespace Transity.General
 		public static char PatchVersionTag { get; } = 'p';
 
 		//ID nejnovejsi verze (optimalne aktualizovat)
-		public static string CurrentVersionID { get; } = "0.1.4";
+		public static string CurrentVersionID { get; } = "0.1";
 		public static AppVersion Current { get; }
 
 
