@@ -6,17 +6,29 @@ namespace Transity.External
 	internal static class FileManager
 	{
 		//Zda soubor existuje
-		public static bool FileExists(string fileName)
+		public static bool Exists(string fileName)
 		{
 			return File.Exists(fileName);
 		}
 
 
+		//Ziska nazev souboru
+		public static string GetFileName(string fileName)
+		{
+			return Path.GetFileNameWithoutExtension(fileName);
+		}
+		//Ziska priponu souboru
+		public static string GetFileExtension(string fileName)
+		{
+			return Path.GetExtension(fileName)[1..];
+		}
+
+		
 		//Pokusi se precist obsah souboru
 		public static string GetContents(string fileName)
 		{
 			//Kontrola existence souboru
-			if (!FileExists(fileName)) throw new Exception();
+			if (!Exists(fileName)) throw new Exception();
 			//Pokus o cteni souboru
 			string contents = File.ReadAllText(fileName);
 			return contents;
@@ -34,6 +46,10 @@ namespace Transity.External
 		//Pokusi se zapsat obsah do souboru
 		public static bool PutContents(string fileName, string contents)
 		{
+			if (!Exists(fileName))
+			{
+				if (!DirectoryManager.Exists(DirectoryManager.GetDirectory(fileName) ?? "")) DirectoryManager.Create(DirectoryManager.GetDirectory(fileName) ?? "");
+			}
 			//Zapis do souboru
 			File.WriteAllText(fileName, contents);
 			

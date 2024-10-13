@@ -10,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Navigation;
 using Transity.General;
 using Transity.External;
+using Transity.Content;
 
 namespace Transity
 {
@@ -21,6 +22,10 @@ namespace Transity
 		public MainWindow()
 		{
 			InitializeComponent();
+			Translator.LoadAllLanguages();
+			MessageBox.Show(Translator.LoadTranslation(new("cs"), "cs"));
+			MessageBox.Show(Translator.LoadTranslation(new("en"), "cs"));
+			MessageBox.Show(Translator.LoadTranslation(new("de"), "cs"));
 		}
 	}
 }
