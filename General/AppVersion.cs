@@ -34,8 +34,8 @@ namespace Transity.General
 		public static char PatchVersionTag { get; } = 'p';
 
 		//ID nejnovejsi verze (optimalne aktualizovat)
-		public static string CurrentVersionID { get; } = "0.1.2p";
-		public static AppVersion CurrentVersion;
+		public static string CurrentVersionID { get; } = "0.1.3";
+		public static AppVersion Current { get; }
 
 
 		//Cislo vydani
@@ -80,7 +80,6 @@ namespace Transity.General
 				versionID = versionID.Substring(OptionalVersionPrefix.Length);
 			}
 			//Nacteni doplnkovych informaci
-			//Patch
 			(Patched, versionID) = DetermineTag(versionID, PatchVersionTag);
 			(Experimental, versionID) = DetermineTag(versionID, ExperimentalVersionTag);
 
@@ -94,7 +93,7 @@ namespace Transity.General
 		//Nacteni aktualni verze pri spusteni
 		static AppVersion()
 		{
-			CurrentVersion = new(CurrentVersionID);
+			Current = new(CurrentVersionID);
 		}
 
 		//Rozhodne, zda verze obsahuje urcite oznaceni na konci a vrati jeji podobu bez tohoto oznaceni

@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Navigation;
 using Transity.General;
+using Transity.External;
 
 namespace Transity
 {
