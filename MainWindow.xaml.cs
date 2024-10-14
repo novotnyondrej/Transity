@@ -11,6 +11,7 @@ using System.Windows.Navigation;
 using Transity.General;
 using Transity.External;
 using Transity.Content;
+using Transity.General.Exceptions;
 
 namespace Transity
 {
@@ -23,9 +24,18 @@ namespace Transity
 		{
 			InitializeComponent();
 			Translator.LoadAllLanguages();
-			MessageBox.Show(Translator.LoadTranslation(new("cs"), "cs"));
-			MessageBox.Show(Translator.LoadTranslation(new("en"), "cs"));
-			MessageBox.Show(Translator.LoadTranslation(new("de"), "cs"));
+			//MessageBox.Show(Translator.LoadTranslation(new("cs"), "cs"));
+			//MessageBox.Show(Translator.LoadTranslation(new("en"), "cs"));
+			//MessageBox.Show(Translator.LoadTranslation(new("de"), "cs"));
+
+			try
+			{
+				throw new DetailedTranslatableException(new("de", "languages"));
+			}
+			catch (Exception e)
+			{
+				MessageBox.Show(e.Message);
+			}
 		}
 	}
 }

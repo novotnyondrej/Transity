@@ -1,0 +1,3 @@
+{
+	"exception-details-text" : "(File: \"{file-name}\", Method: \"{method-name}\", Line number: \"{line-number}\")"
+}

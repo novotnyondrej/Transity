@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Text.RegularExpressions;
-using System.Windows;
 using Transity.External;
 
 namespace Transity.Content
@@ -44,44 +43,32 @@ namespace Transity.Content
 		private static bool IsSetLoaded(string languageKey, string setKey) => IsLanguageLoaded(languageKey) && LoadedTranslations[languageKey].ContainsKey(setKey);
 
 
-		//Vyhodnoti, zda je nazev jazyka/setu platny
-		private static bool ValidName(string language, string? setName = null)
-		{
-			language = language.Trim();
-			setName = (setName == null ? null : setName.Trim());
-
-			//Nesmime povolit nacitani jazyka mimo slozku jazyku
-			if (language.StartsWith("..")) return false;
-			if (setName != null && (setName.StartsWith("..") || setName.Contains("/..") || setName.Contains("\\.."))) return false;
-			return true;
-		}
 		//Nacte set ze souboru
-		private static Dictionary<string, string> LoadSetFromFile(string language, string setName)
+		private static Dictionary<string, string> LoadSetFromFile(string languageKey, string setKey)
 		{
-			//Validace umisteni
-			if (!ValidName(language, setName)) throw new Exception();
+			//Zajisteni platnych klicu
+			languageKey = ToValidKey(languageKey);
+			setKey = ToValidKey(setKey);
 
 			//Cesta k setu
-			string setLocation = $"{TranslationsLocation}{language}/{setName}.json";
+			string setLocation = $"{TranslationsLocation}{languageKey}/{setKey}.json";
 			//Nacteni setu
 			Dictionary<string, string> set = FileManager.GetJsonContents<Dictionary<string, string>>(setLocation) ?? [];
-			//Zajisteni spravnych klicu
-			set = set.Select(
-				(pair) => new KeyValuePair<string, string>(ToValidKey(pair.Key), pair.Value)
-			).ToDictionary(
-				(pair) => pair.Key,
+			//Zajisteni platnych klicu
+			set = set.ToDictionary(
+				(pair) => ToValidKey(pair.Key),
 				(pair) => pair.Value
 			);
 			return set;
 		}
 		//Nacte nazvy dostupnych setu v jazyce
-		private static IEnumerable<string> LoadLanguageSetNames(string language)
+		private static IEnumerable<string> LoadLanguageSetNames(string languageKey)
 		{
-			//Validace umisteni 
-			if (!ValidName(language)) throw new Exception();
+			//Zajisteni platneho klice
+			languageKey = ToValidKey(languageKey);
 
 			//Cesta k jazyku
-			string languageLocation = $"{TranslationsLocation}{language}/";
+			string languageLocation = $"{TranslationsLocation}{languageKey}/";
 			//Ziskani vsech setu daneho jazyka
 			IEnumerable<string> sets = DirectoryManager.GetFiles(languageLocation);
 			//Prevod pouze na nazvy setu
@@ -108,19 +95,17 @@ namespace Transity.Content
 
 
 		//Nacte set
-		private static void LoadSet(string language, string setName)
+		private static void LoadSet(string languageKey, string setKey)
 		{
-			language = language.Trim();
-			setName = setName.Trim();
-			//Prevod na klice
-			string languageKey = ToValidKey(language);
-			string setKey = ToValidKey(setName);
+			//Zajisteni platnych klicu
+			languageKey = ToValidKey(languageKey);
+			setKey = ToValidKey(setKey);
 
 			//Jestli je set nacteny, neni duvod to delat znovu
 			if (IsSetLoaded(languageKey, setKey)) return;
 
 			//Nacteni setu
-			Dictionary<string, string> set = LoadSetFromFile(language, setName);
+			Dictionary<string, string> set = LoadSetFromFile(languageKey, setKey);
 			//Kontrola setu
 			if (set.Count <= 0) return;
 
@@ -129,19 +114,19 @@ namespace Transity.Content
 			LoadedTranslations[languageKey][setKey] = set;
 		}
 		//Nacte jazyk
-		public static void LoadLanguage(string language)
+		public static void LoadLanguage(string languageKey)
 		{
 			//Klic jazyka
-			string languageKey = ToValidKey(language);
+			languageKey = ToValidKey(languageKey);
 			//Kontrola, jestli jazyk uz neni nacteny - abychom nemuseli nacitat vsechno od zacatku
 			if (LoadedLanguages.Contains(languageKey)) return;
 
 			//Ziskani vsech setu daneho jazyka
-			IEnumerable<string> sets = LoadLanguageSetNames(language);
+			IEnumerable<string> sets = LoadLanguageSetNames(languageKey);
 			//Nacteni prekladu jednotlivych setu
-			foreach (string setName in sets)
+			foreach (string setKey in sets)
 			{
-				LoadSet(language, setName);
+				LoadSet(languageKey, setKey);
 			}
 			//Pridani jazyku do seznamu nactenych jazyku
 			LoadedLanguages.Add(languageKey);
@@ -151,9 +136,9 @@ namespace Transity.Content
 		{
 			IEnumerable<string> languages = LoadAvailableLanguageNames();
 			//Nacteni jednotlivych jazyku
-			foreach (string language in languages)
+			foreach (string languageKey in languages)
 			{
-				LoadLanguage(language);
+				LoadLanguage(languageKey);
 			}
 		}
 
@@ -161,71 +146,70 @@ namespace Transity.Content
 		//Nacte preklad
 		public static string LoadTranslation(TranslationKey key, string? targetLanguage = null)
 		{
-			string keyStr = ToValidKey(key.Key);
+			string translationKey = ToValidKey(key.Key);
 			string? targetSet = key.Set;
 			string? setKey = (targetSet != null ? ToValidKey(targetSet) : null);
-			string language = targetLanguage ?? DesiredLanguage;
-			string languageKey = ToValidKey(language);
+			string languageKey = ToValidKey(targetLanguage ?? DesiredLanguage);
 			//Zda set je definovan
 			bool hasSet = (setKey != null);
 
 			//Pokud je specifikovan set, nacteme ho
-			if (hasSet) LoadSet(language, targetSet ?? "");
+			if (hasSet) LoadSet(languageKey, setKey ?? "");
 			//Jinak musime bohuzel nacist cely jazyk
-			else LoadLanguage(language);
+			else LoadLanguage(languageKey);
 
-			//Kontrola dostupnosti
-			if (!IsLanguageLoaded(languageKey) || (hasSet && !IsSetLoaded(languageKey, setKey ?? "")))
-			{
-				//Jazyk/set neexistuje/nelze nacist
-				//Pokud jsme prave nenacitali zalozni jazyk, pokusime se najit preklad pro nej
-				if (language != BackupLanguage) return LoadTranslation(key, BackupLanguage);
-				//Pokud jsme prave nacitali zalozni jazyk, a pro nej to taky nevyslo, nezbyva nam nic jineho nez vratit klic ve sve plne krase
-				return keyStr;
-			}
-			//Jazyk/set existuje, ale neni zarucene, ze existuje preklad
+
+			//Zda je jazyk/set dostupny
+			bool languageAvailable = (IsLanguageLoaded(languageKey) && (!hasSet || IsSetLoaded(languageKey, setKey ?? "")));
+
+
 			//Set, ktery splnuje pozadavky
-			Dictionary<string, string>? matchingSet;
-			//Pokus o nalezeni prekladu
-			if (hasSet)
+			Dictionary<string, string>? matchingSet = null;
+			//Pokus o nalezeni setu
+			if (languageAvailable)
 			{
-				matchingSet = LoadedTranslations[languageKey][setKey ?? ""];
-			}
-			else
-			{
-				matchingSet = LoadedTranslations[languageKey].Values.FirstOrDefault(
-					(set) => set.ContainsKey(keyStr)
-				);
+				if (hasSet)
+				{
+					matchingSet = LoadedTranslations[languageKey][setKey ?? ""];
+				}
+				else
+				{
+					matchingSet = LoadedTranslations[languageKey].Values.FirstOrDefault(
+						(set) => set.ContainsKey(translationKey)
+					);
+				}
 			}
 			//Nacteni prekladu
-			string? translation = (matchingSet == null ? null : matchingSet.GetValueOrDefault(keyStr));
+			string? translation = matchingSet?.GetValueOrDefault(translationKey);
+
 
 			//Kontrola prekladu
 			if (translation == null || translation.Length <= 0)
 			{
 				//Preklad neexistuje
 				//Pokud jsme prave nenacitali zalozni jazyk, pokusime se najit preklad pro nej
-				if (language != BackupLanguage) return LoadTranslation(key, BackupLanguage);
+				if (languageKey != BackupLanguage) return LoadTranslation(key, BackupLanguage);
 				//Pokud jsme prave nacitali zalozni jazyk, a pro nej to taky nevyslo, nezbyva nam nic jineho nez vratit klic ve sve plne krase
-				return keyStr;
+				return translationKey;
 			}
 			//Nacteni promennych do prekladu
-			return key.FillVariables(translation ?? "", language);
+			return key.FillVariables(translation ?? "", languageKey);
 		}
 
 
 		//Prevede string na platny klic
 		private static string ToValidKey(string key)
 		{
-			key = key.Trim().ToLower();
-
-			//Regex
-			Regex regex = new(@"[a-z0-9-_]{1,64}");
-			//Filtr klice
-			key = regex.Match(key).Value;
+			key = key.Trim();
 
 			//Nahrazeni pripadneho podtrzitka pomlckou
 			key = key.Replace('_', '-');
+			//SnakeCase to kebab-case
+			key = Regex.Replace(key, @"([a-z])([A-Z]+)", "$1-$2").ToLower();
+			//Filtr klice
+			key = Regex.Match(key, @"[a-z0-9-]{1,64}").Value;
+			//Odebrani opakujicich se polmcek
+			key = Regex.Replace(key, @"(-+)", "-");
 			return key;
 		}
 	}
