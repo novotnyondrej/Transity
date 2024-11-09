@@ -24,32 +24,6 @@ namespace Transity
 		public MainWindow()
 		{
 			InitializeComponent();
-			MessageBox.Show(AppSettings.UserSettings.BackupLanguage);
-			//AppSettings.UserSettings.TargetLanguage = (AppSettings.UserSettings.TargetLanguage == "en" ? "cs" : "en");
-			//AppSettings.UserSettings.BackupLanguage = (AppSettings.UserSettings.BackupLanguage == "en" ? "cs" : "en");
-			//AppSettings.UserSettings.LoadTranslationsOnStartup = (!AppSettings.UserSettings.LoadTranslationsOnStartup);
-
-			//MessageBox.Show(Translator.LoadTranslation(new TranslationKey("exception-details-text")));
-			//MessageBox.Show(Translator.LoadTranslation(new("cs"), "cs"));
-			//MessageBox.Show(Translator.LoadTranslation(new("en"), "cs"));
-			//MessageBox.Show(Translator.LoadTranslation(new("de"), "cs"));
-			/*AppDataManager.LoadData("test", "test", "test");
-			AppDataManager.LoadData("test\\..\\..\\", "test", "test");
-			AppDataManager.SaveData("test\\", "test", "test");
-			AppDataManager.SaveData("test", "test2", "test");
-			AppDataManager.SaveData("test\\..", "test", "test");
-			MessageBox.Show(AppDataManager.LoadData("test", "test", "test"));
-			AppDataManager.DeleteData("test\\", "test2");*/
-			//AppDataManager.DeleteAllData();
-
-			try
-			{
-				//throw new DetailedTranslatableException(new("test-exception", "exceptions"));
-			}
-			catch (Exception e)
-			{
-				MessageBox.Show(e.Message);
-			}
 		}
 	}
 }
