@@ -1,3 +1,4 @@
 {
-	"exception-details-text" : "(File: \"{file-name}\", Method: \"{method-name}\", Line number: \"{line-number}\")"
+	"exception-details-text": "(File: \"{file-name}\", Method: \"{method-name}\", Line number: \"{line-number}\")",
+	"json-deserialization-error": "Failed to deserialize JSON object of resource \"{resource-name}\": \"{original-error}\""
 }

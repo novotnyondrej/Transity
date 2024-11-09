@@ -1,19 +1,55 @@
 ﻿using Newtonsoft.Json;
+using System.Windows;
+using Transity.General.Exceptions;
 
 namespace Transity.External
 {
 	//Trida pro prevadeni objektu na json a naopak
 	internal static class JsonConverter
 	{
-		//Prevede na json
-		public static string ConvertToJson<OfType>(OfType obj)
+		//Prevede na json nebo vyhodi error, pokud se prevod nezdaril
+		public static string ConvertToJson<OfType>(OfType obj, string? resourceName = null)
 		{
-			return JsonConvert.SerializeObject(obj);
+			try
+			{
+				return JsonConvert.SerializeObject(obj);
+			}
+			catch (Exception exception)
+			{
+				throw new TranslatableException(
+					new(
+						"json-serialization-error",
+						"exceptions",
+						new()
+						{
+							{ "original-message", exception.Message },
+							{ "resource-name", resourceName ?? "?" }
+						}
+					)
+				);
+			}
 		}
-		//Prevede z jsonu na objekt
-		public static OfType? ConvertFromJson<OfType>(string json)
+		//Prevede z jsonu na objekt nebo vyhodi error, pokud se prevod nezdaril
+		public static OfType? ConvertFromJson<OfType>(string json, string? resourceName = null)
 		{
-			return JsonConvert.DeserializeObject<OfType>(json);
+			try
+			{
+				return JsonConvert.DeserializeObject<OfType>(json);
+			}
+			catch (Exception exception)
+			{
+				throw new TranslatableException(
+					new(
+						"json-deserialization-error",
+						"exceptions",
+						new()
+						{
+							{ "original-message", exception.Message },
+							{ "resource-name", resourceName ?? "?" }
+						}
+					)	
+				);
+			}
 		}
 	}
 }

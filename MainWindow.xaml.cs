@@ -24,13 +24,14 @@ namespace Transity
 		{
 			InitializeComponent();
 			Translator.LoadAllLanguages();
+			//MessageBox.Show(Translator.LoadTranslation(new TranslationKey("exception-details-text")));
 			//MessageBox.Show(Translator.LoadTranslation(new("cs"), "cs"));
 			//MessageBox.Show(Translator.LoadTranslation(new("en"), "cs"));
 			//MessageBox.Show(Translator.LoadTranslation(new("de"), "cs"));
 
 			try
 			{
-				throw new DetailedTranslatableException(new("de", "languages"));
+				throw new DetailedTranslatableException(new("test-exception", "exceptions"));
 			}
 			catch (Exception e)
 			{
