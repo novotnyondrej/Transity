@@ -1,6 +1,5 @@
-﻿using System;
-using System.DirectoryServices;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using Transity.Data;
 using Transity.External;
 using Transity.General;
 using Transity.General.Exceptions;
@@ -26,12 +25,6 @@ namespace Transity.Content
 	{
 		//Umisteni slozky s preklady
 		public static string TranslationsLocation { get => DirectoryManager.ProjectDirectory + "Resources\\Translations\\"; }
-		//Zalozni jazyk pri neuspechu nacteni prekladu
-		public static string BackupLanguage { get; } = "en";
-		//Pozadovany jazyk
-		public static string DesiredLanguage { get; } = "cs";
-		//Zda se maji jazyky nacitat se spustenim aplikace, ci pouze na vyzadani
-		public static bool LoadOnStartup { get; } = false;
 
 
 		//Seznam dostupnych jazyku
@@ -55,21 +48,69 @@ namespace Transity.Content
 		//Prvotni nacteni
 		static Translator()
 		{
+			AppSettings userSettings = AppSettings.UserSettings;
+			bool loadOnStartup = userSettings.LoadTranslationsOnStartup;
+
 			//Nacteni dostupnych jazyku
 			_AvailableLanguages = [];
 			LoadAvailableLanguages();
-			//Nacteni prekladu pri startu, pokud tomu tak ma byt
-			if (LoadOnStartup)
+			//Prvotni nacteni prekladu
+			OnTranslationStrategyChanged(loadOnStartup);
+
+			//Event listenery
+			//Pri zmene jazyka dojde k odnacteni daneho jazyka a pripadne nacteni toho noveho, zalezi na nastaveni
+			userSettings.OnTargetLanguageChanged += OnLanguagePreferencesChanged;
+			userSettings.OnBackupLanguageChanged += OnLanguagePreferencesChanged;
+			userSettings.OnTranslationLoadStrategyChanged += OnTranslationStrategyChanged;
+		}
+		//Event listener na zmenu jazyka
+		private static void OnLanguagePreferencesChanged(string? originalLanguage, string? newLanguage)
+		{
+			AppSettings userSettings = AppSettings.UserSettings;
+			string targetLanguage = userSettings.TargetLanguage;
+			string backupLanguage = userSettings.BackupLanguage;
+			bool loadOnStartup = userSettings.LoadTranslationsOnStartup;
+
+			//Kontrola, jestli je puvodni jazyk stale aktivni
+			if (originalLanguage is not null && originalLanguage != targetLanguage && originalLanguage != backupLanguage)
 			{
-				LoadAllTranslationSets(DesiredLanguage);
-				LoadAllTranslationSets(BackupLanguage);
-				//Nacteni sady s preklady jazyku pro vsechny ostatni jazyky
-				foreach (string language in _AvailableLanguages)
+				//Jazyk se jiz nepouziva, pokud existuje, tak ho odnacteme - az na prekladovou sadu "languages"
+				if (LoadedTranslations.TryGetValue(originalLanguage, out Dictionary<string, Dictionary<string, string>>? translationSets))
 				{
-					LoadTranslationSet(language, "languages");
+					LoadedTranslations[originalLanguage] = translationSets.Where(
+						(pair) => pair.Key == "languages"
+					).ToDictionary();
 				}
 			}
+			//Nacteni noveho jazyka, pokud ho mame nacist pri startu
+			if (newLanguage is not null && loadOnStartup)
+			{
+				LoadAllTranslationSets(newLanguage);
+			}
 		}
+		//Event listener na zmenu strategie nacitani jazyku
+		private static void OnTranslationStrategyChanged(bool newValue)
+		{
+			//Pokud se jazyky nemaji nacitat, tak neni co menit
+			if (newValue == false) return;
+			//Probehne nacteni jazyku
+
+			//Nacteni nastaveni
+			AppSettings userSettings = AppSettings.UserSettings;
+			string targetLanguage = userSettings.TargetLanguage;
+			string backupLanguage = userSettings.BackupLanguage;
+
+			//Nacteni jazyku
+			LoadAllTranslationSets(targetLanguage);
+			LoadAllTranslationSets(backupLanguage);
+			//Nacteni sady s preklady jazyku pro vsechny ostatni jazyky
+			foreach (string language in _AvailableLanguages)
+			{
+				LoadTranslationSet(language, "languages");
+			}
+		}
+
+
 		//Nacte dostupne jazyky
 		private static void LoadAvailableLanguages()
 		{
@@ -234,9 +275,14 @@ namespace Transity.Content
 
 
 		//Nacte preklad
-		public static string LoadTranslation(TranslationKey key, string? targetLanguage = null)
+		public static string LoadTranslation(TranslationKey key, string? requestedLanguage = null)
 		{
-			string language = (ToValidKey(targetLanguage ?? DesiredLanguage));
+			AppSettings userSettings = AppSettings.UserSettings;
+			string targetLanguage = userSettings.TargetLanguage;
+			string backupLanguage = userSettings.BackupLanguage;
+
+
+			string language = (ToValidKey(requestedLanguage ?? targetLanguage));
 			string? setName = (key.Set is not null ? ToValidKey(key.Set) : null);
 			string translationKey = ToValidKey(key.Key);
 
@@ -262,9 +308,9 @@ namespace Transity.Content
 			{
 				//Preklad v tomto jazyce neexistuje.
 				//Muzeme se ho pokusit v nasem pozadovanem jazyce
-				if (language != DesiredLanguage && language != BackupLanguage) return LoadTranslation(key, DesiredLanguage);
+				if (language != targetLanguage && language != backupLanguage) return LoadTranslation(key, targetLanguage);
 				//Nebo take v zaloznim jazyce
-				if (language == DesiredLanguage) return LoadTranslation(key, BackupLanguage);
+				if (language == targetLanguage) return LoadTranslation(key, backupLanguage);
 				//Tak toto je konecna, uz nemame dalsi tipy, musime proste vratit nazev klice
 				return translationKey;
 			}

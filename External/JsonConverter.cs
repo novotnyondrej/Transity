@@ -12,7 +12,7 @@ namespace Transity.External
 		{
 			try
 			{
-				return JsonConvert.SerializeObject(obj);
+				return JsonConvert.SerializeObject(obj, Formatting.Indented);
 			}
 			catch (Exception exception)
 			{

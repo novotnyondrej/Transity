@@ -12,6 +12,7 @@ using Transity.General;
 using Transity.External;
 using Transity.Content;
 using Transity.General.Exceptions;
+using Transity.Data;
 
 namespace Transity
 {
@@ -23,6 +24,10 @@ namespace Transity
 		public MainWindow()
 		{
 			InitializeComponent();
+			//AppSettings.UserSettings.TargetLanguage = (AppSettings.UserSettings.TargetLanguage == "en" ? "cs" : "en");
+			//AppSettings.UserSettings.BackupLanguage = (AppSettings.UserSettings.BackupLanguage == "en" ? "cs" : "en");
+			//AppSettings.UserSettings.LoadTranslationsOnStartup = (!AppSettings.UserSettings.LoadTranslationsOnStartup);
+
 			//MessageBox.Show(Translator.LoadTranslation(new TranslationKey("exception-details-text")));
 			//MessageBox.Show(Translator.LoadTranslation(new("cs"), "cs"));
 			//MessageBox.Show(Translator.LoadTranslation(new("en"), "cs"));

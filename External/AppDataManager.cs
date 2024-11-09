@@ -10,8 +10,10 @@ namespace Transity.External
 		public static string DataLocation => DirectoryManager.AppDataDirectory + "Transity\\";
 
 		//Zkontroluje umisteni dat, pripadne vyhodi chybu
-		public static string CheckLocation(string location)
+		public static string CheckLocation(string? location)
 		{
+			if (location is null) return "";
+
 			location = location.Trim();
 			//Umisteni nesmi obsahovat ..
 			if (location.Contains(".."))
@@ -42,7 +44,7 @@ namespace Transity.External
 
 
 		//Pokusi se nacist data z pozadovaneho zdroje
-		private static OfType? TryLoadData<OfType>(string location, string fileName)
+		private static OfType? TryLoadData<OfType>(string? location, string fileName)
 		{
 			try
 			{
@@ -64,14 +66,14 @@ namespace Transity.External
 					"exceptions",
 					new()
 					{
-						{ "location", location },
+						{ "location", location ?? "" },
 						{ "file-name", fileName },
 						{ "original-message", exception.Message }
 					}
 				));
 			}
 		}
-		public static OfType LoadData<OfType>(string location, string fileName, OfType defaultValue)
+		public static OfType LoadData<OfType>(string? location, string fileName, OfType defaultValue)
 		{
 			//Pokus o nacteni dat
 			return SafeExecutor.Execute(TryLoadData<OfType>, location, fileName, defaultValue) ?? defaultValue;
@@ -79,7 +81,7 @@ namespace Transity.External
 	
 		
 		//Pokusi se ulozit data na pozadovane misto
-		private static void TrySaveData<OfType>(string location, string fileName, OfType data)
+		private static void TrySaveData<OfType>(string? location, string fileName, OfType data)
 		{
 			try
 			{
@@ -99,14 +101,14 @@ namespace Transity.External
 					"exceptions",
 					new()
 					{
-						{ "location", location },
+						{ "location", location ?? "" },
 						{ "file-name", fileName },
 						{ "original-message", exception.Message }
 					}
 				));
 			}
 		}
-		public static void SaveData<OfType>(string location, string fileName, OfType data)
+		public static void SaveData<OfType>(string? location, string fileName, OfType data)
 		{
 			//Pokus o ulozeni dat
 			SafeExecutor.Execute(TrySaveData, location, fileName, data);
@@ -114,7 +116,7 @@ namespace Transity.External
 
 
 		//Pokusi se smazat data z pozadovaneho mista
-		private static void TryDeleteData(string location, string fileName)
+		private static void TryDeleteData(string? location, string fileName)
 		{
 			try
 			{
@@ -136,14 +138,14 @@ namespace Transity.External
 					"exceptions",
 					new()
 					{
-						{ "location", location },
+						{ "location", location ?? "" },
 						{ "file-name", fileName },
 						{ "original-message", exception.Message }
 					}
 				));
 			}
 		}
-		public static void DeleteData(string location, string fileName)
+		public static void DeleteData(string? location, string fileName)
 		{
 			//Pokus o ulozeni dat
 			SafeExecutor.Execute(TryDeleteData, location, fileName);
