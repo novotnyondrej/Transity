@@ -83,10 +83,10 @@ namespace Transity.Content
 		private static IEnumerable<string> LoadAvailableLanguageNames()
 		{
 			//Ziskani vsech slozek
-			IEnumerable<string> languages = DirectoryManager.GetFolders(TranslationsLocation);
+			IEnumerable<string> languages = DirectoryManager.GetDirectories(TranslationsLocation);
 			//Prevod na nazvy jazyku
 			languages = languages.Select(
-				(languageLocation) => DirectoryManager.GetFolderName(languageLocation) ?? ""
+				(languageLocation) => DirectoryManager.GetDirectoryName(languageLocation) ?? ""
 			).Where(
 				(language) => language.Length > 0
 			);

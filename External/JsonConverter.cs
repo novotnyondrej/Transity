@@ -8,7 +8,7 @@ namespace Transity.External
 	internal static class JsonConverter
 	{
 		//Prevede na json nebo vyhodi error, pokud se prevod nezdaril
-		public static string ConvertToJson<OfType>(OfType obj, string? resourceName = null)
+		public static string ConvertToJson<OfType>(OfType obj)
 		{
 			try
 			{
@@ -22,15 +22,14 @@ namespace Transity.External
 						"exceptions",
 						new()
 						{
-							{ "original-message", exception.Message },
-							{ "resource-name", resourceName ?? "?" }
+							{ "original-message", exception.Message }
 						}
 					)
 				);
 			}
 		}
 		//Prevede z jsonu na objekt nebo vyhodi error, pokud se prevod nezdaril
-		public static OfType? ConvertFromJson<OfType>(string json, string? resourceName = null)
+		public static OfType? ConvertFromJson<OfType>(string json)
 		{
 			try
 			{
@@ -44,8 +43,7 @@ namespace Transity.External
 						"exceptions",
 						new()
 						{
-							{ "original-message", exception.Message },
-							{ "resource-name", resourceName ?? "?" }
+							{ "original-message", exception.Message }
 						}
 					)	
 				);

@@ -1,4 +1,11 @@
 {
 	"exception-details-text": "(File: \"{file-name}\", Method: \"{method-name}\", Line number: \"{line-number}\")",
-	"json-deserialization-error": "Failed to deserialize JSON object of resource \"{resource-name}\": \"{original-error}\""
+	"json-deserialization-error": "Failed to convert JSON to object",
+	"json-serialization-error": "Failed to convert object to JSON",
+	"invalid-path": "Invalid path",
+	"path-too-long": "Path too long",
+	"unauthorized-access": "Unauthorized access",
+	"directory-not-found": "Directory not found",
+	"path-not-supported": "Path is not supported",
+	"path-inaccessible": "Path is not accessible"
 }

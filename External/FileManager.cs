@@ -12,6 +12,7 @@ namespace Transity.External
 		}
 
 
+	
 		//Ziska nazev souboru
 		public static string GetFileName(string fileName)
 		{
@@ -48,7 +49,7 @@ namespace Transity.External
 		{
 			if (!Exists(fileName))
 			{
-				if (!DirectoryManager.Exists(DirectoryManager.GetDirectory(fileName) ?? "")) DirectoryManager.Create(DirectoryManager.GetDirectory(fileName) ?? "");
+				if (!DirectoryManager.Exists(DirectoryManager.GetParentDirectory(fileName) ?? "")) DirectoryManager.Create(DirectoryManager.GetParentDirectory(fileName) ?? "");
 			}
 			//Zapis do souboru
 			File.WriteAllText(fileName, contents);
