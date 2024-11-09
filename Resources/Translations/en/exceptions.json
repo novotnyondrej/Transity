@@ -2,10 +2,14 @@
 	"exception-details-text": "(File: \"{file-name}\", Method: \"{method-name}\", Line number: \"{line-number}\")",
 	"json-deserialization-error": "Failed to convert JSON to object",
 	"json-serialization-error": "Failed to convert object to JSON",
-	"invalid-path": "Invalid path",
+	"invalid-path-of-directory": "Invalid path of a directory",
+	"invalid-path-of-file": "Invalid path of a file",
 	"path-too-long": "Path too long",
 	"unauthorized-access": "Unauthorized access",
 	"directory-not-found": "Directory not found",
+	"file-not-found": "File not found",
 	"path-not-supported": "Path is not supported",
+	"file-read-insufficient-permission": "Insufficient permission to read file",
+	"file-write-insufficient-permission": "Insufficient permission to write to file",
 	"path-inaccessible": "Path is not accessible"
 }

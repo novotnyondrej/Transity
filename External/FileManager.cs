@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Security;
+using Transity.General.Exceptions;
 
 namespace Transity.External
 {
@@ -6,63 +8,150 @@ namespace Transity.External
 	internal static class FileManager
 	{
 		//Zda soubor existuje
-		public static bool Exists(string fileName)
+		public static bool Exists(string path)
 		{
-			return File.Exists(fileName);
+			return File.Exists(path);
 		}
 
 
-	
-		//Ziska nazev souboru
-		public static string GetFileName(string fileName)
+		//Ziska nazev souboru podle cesty
+		public static string GetFileName(string path)
 		{
-			return Path.GetFileNameWithoutExtension(fileName);
+			try
+			{
+				return Path.GetFileNameWithoutExtension(path);
+			}
+			catch (ArgumentException)
+			{
+				throw new TranslatableException(new("invalid-path-of-file", "exceptions"));
+			}
 		}
-		//Ziska priponu souboru
-		public static string GetFileExtension(string fileName)
+		//Ziska priponu souboru podle cesty
+		public static string GetFileExtension(string path)
 		{
-			return Path.GetExtension(fileName)[1..];
+			try
+			{
+				//Ziskani pripony
+				string extension = Path.GetExtension(path);
+				//Pokud existuje, tak odebereme .
+				if (extension.Length > 0) extension = extension[1..];
+				return extension;
+			}
+			catch (ArgumentException)
+			{
+				throw new TranslatableException(new("invalid-path-of-file", "exceptions"));
+			}
 		}
 
 		
-		//Pokusi se precist obsah souboru
-		public static string GetContents(string fileName)
+		//Pokusi se nacist obsah souboru
+		public static string GetContents(string path)
 		{
-			//Kontrola existence souboru
-			if (!Exists(fileName)) throw new Exception();
-			//Pokus o cteni souboru
-			string contents = File.ReadAllText(fileName);
-			return contents;
+			try
+			{
+				//Pokus o cteni souboru
+				string contents = File.ReadAllText(path);
+				return contents;
+			}
+			catch (ArgumentException)
+			{
+				throw new TranslatableException(new("invalid-path-of-file", "exceptions"));
+			}
+			catch (UnauthorizedAccessException)
+			{
+				throw new TranslatableException(new("unauthorized-access", "exceptions"));
+			}
+			catch (PathTooLongException)
+			{
+				throw new TranslatableException(new("path-too-long", "exceptions"));
+			}
+			catch (DirectoryNotFoundException)
+			{
+				throw new TranslatableException(new("directory-not-found", "exceptions"));
+			}
+			catch (FileNotFoundException)
+			{
+				throw new TranslatableException(new("file-not-found", "exceptions"));
+			}
+			catch (NotSupportedException)
+			{
+				throw new TranslatableException(new("path-not-supported", "exceptions"));
+			}
+			catch (SecurityException)
+			{
+				throw new TranslatableException(new("file-read-insufficient-permission", "exceptions"));
+			}
+			catch (IOException)
+			{
+				throw new TranslatableException(new("path-inaccessible", "exceptions"));
+			}
 		}
 		//Pokusi se nacist objekt ze souboru
-		public static OfType? GetJsonContents<OfType>(string fileName)
+		public static OfType? GetJsonContents<OfType>(string path)
 		{
 			//Nacteni obsahu souboru
-			string contents = GetContents(fileName);
+			string contents = GetContents(path);
 			//Prevod na objekt
 			return JsonConverter.ConvertFromJson<OfType>(contents);
 		}
 
 
 		//Pokusi se zapsat obsah do souboru
-		public static bool PutContents(string fileName, string contents)
+		public static bool PutContents(string path, string contents)
 		{
-			if (!Exists(fileName))
+			//Pokud soubor neexistuje, musime si overit, ze alespon existuje cesta k souboru
+			if (!Exists(path))
 			{
-				if (!DirectoryManager.Exists(DirectoryManager.GetParentDirectory(fileName) ?? "")) DirectoryManager.Create(DirectoryManager.GetParentDirectory(fileName) ?? "");
+				//Ziskani cesty ke slozce
+				string directory = DirectoryManager.GetParentDirectory(path);
+				//Pokud slozka neexistuje, je treba ji vytvorit
+				if (!DirectoryManager.Exists(directory))
+				{
+					DirectoryManager.Create(directory);
+				}
 			}
-			//Zapis do souboru
-			File.WriteAllText(fileName, contents);
-			
-			return true;
+			try
+			{
+				//Zapis do souboru
+				File.WriteAllText(path, contents);
+				return true;
+			}
+			catch (ArgumentException)
+			{
+				throw new TranslatableException(new("invalid-path-of-file", "exceptions"));
+			}
+			catch (UnauthorizedAccessException)
+			{
+				throw new TranslatableException(new("unauthorized-access", "exceptions"));
+			}
+			catch (PathTooLongException)
+			{
+				throw new TranslatableException(new("path-too-long", "exceptions"));
+			}
+			catch (DirectoryNotFoundException)
+			{
+				throw new TranslatableException(new("directory-not-found", "exceptions"));
+			}
+			catch (NotSupportedException)
+			{
+				throw new TranslatableException(new("path-not-supported", "exceptions"));
+			}
+			catch (SecurityException)
+			{
+				throw new TranslatableException(new("file-read-insufficient-permission", "exceptions"));
+			}
+			catch (IOException)
+			{
+				throw new TranslatableException(new("path-inaccessible", "exceptions"));
+			}
 		}
 		//Pokusi se zapsat objekt do souboru
-		public static bool PutJsonContents<OfType>(string fileName, OfType obj)
+		public static bool PutJsonContents<OfType>(string path, OfType obj)
 		{
 			//Prevod na json
 			string contents = JsonConverter.ConvertToJson(obj);
 			//Zapis do souboru
-			return PutContents(fileName, contents);
+			return PutContents(path, contents);
 		}
 	}
 }

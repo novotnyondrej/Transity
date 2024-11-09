@@ -21,7 +21,7 @@ namespace Transity.External
 			}
 			catch (ArgumentException)
 			{
-				throw new TranslatableException(new("invalid-path", "exceptions"));
+				throw new TranslatableException(new("invalid-path-of-directory", "exceptions"));
 			}
 			catch (UnauthorizedAccessException)
 			{
@@ -54,7 +54,7 @@ namespace Transity.External
 			}
 			catch (ArgumentException)
 			{
-				throw new TranslatableException(new("invalid-path", "exceptions"));
+				throw new TranslatableException(new("invalid-path-of-directory", "exceptions"));
 			}
 			catch (UnauthorizedAccessException)
 			{
@@ -84,7 +84,7 @@ namespace Transity.External
 			}
 			catch (ArgumentException)
 			{
-				throw new TranslatableException(new("invalid-path", "exceptions"));
+				throw new TranslatableException(new("invalid-path-of-directory", "exceptions"));
 			}
 		}
 		
@@ -98,7 +98,7 @@ namespace Transity.External
 			}
 			catch (ArgumentException)
 			{
-				throw new TranslatableException(new("invalid-path", "exceptions"));
+				throw new TranslatableException(new("invalid-path-of-directory", "exceptions"));
 			}
 			catch (PathTooLongException)
 			{
@@ -116,7 +116,7 @@ namespace Transity.External
 			}
 			catch (ArgumentException)
 			{
-				throw new TranslatableException(new("invalid-path", "exceptions"));
+				throw new TranslatableException(new("invalid-path-of-directory", "exceptions"));
 			}
 			catch (UnauthorizedAccessException)
 			{
@@ -144,7 +144,7 @@ namespace Transity.External
 			}
 			catch (ArgumentException)
 			{
-				throw new TranslatableException(new("invalid-path", "exceptions"));
+				throw new TranslatableException(new("invalid-path-of-directory", "exceptions"));
 			}
 			catch (UnauthorizedAccessException)
 			{
