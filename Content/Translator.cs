@@ -48,7 +48,7 @@ namespace Transity.Content
 		//Prvotni nacteni
 		static Translator()
 		{
-			AppSettings userSettings = AppSettings.UserSettings;
+			AppSettings userSettings = AppSettings.UserSettings ?? AppSettings.DefaultSettings;
 			bool loadOnStartup = userSettings.LoadTranslationsOnStartup;
 
 			//Nacteni dostupnych jazyku
@@ -66,7 +66,7 @@ namespace Transity.Content
 		//Event listener na zmenu jazyka
 		private static void OnLanguagePreferencesChanged(string? originalLanguage, string? newLanguage)
 		{
-			AppSettings userSettings = AppSettings.UserSettings;
+			AppSettings userSettings = AppSettings.UserSettings ?? AppSettings.DefaultSettings;
 			string targetLanguage = userSettings.TargetLanguage;
 			string backupLanguage = userSettings.BackupLanguage;
 			bool loadOnStartup = userSettings.LoadTranslationsOnStartup;
@@ -96,7 +96,7 @@ namespace Transity.Content
 			//Probehne nacteni jazyku
 
 			//Nacteni nastaveni
-			AppSettings userSettings = AppSettings.UserSettings;
+			AppSettings userSettings = AppSettings.UserSettings ?? AppSettings.DefaultSettings;
 			string targetLanguage = userSettings.TargetLanguage;
 			string backupLanguage = userSettings.BackupLanguage;
 
@@ -277,7 +277,7 @@ namespace Transity.Content
 		//Nacte preklad
 		public static string LoadTranslation(TranslationKey key, string? requestedLanguage = null)
 		{
-			AppSettings userSettings = AppSettings.UserSettings;
+			AppSettings userSettings = AppSettings.UserSettings ?? AppSettings.DefaultSettings;
 			string targetLanguage = userSettings.TargetLanguage;
 			string backupLanguage = userSettings.BackupLanguage;
 

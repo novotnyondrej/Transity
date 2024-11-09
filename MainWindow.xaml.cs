@@ -24,6 +24,7 @@ namespace Transity
 		public MainWindow()
 		{
 			InitializeComponent();
+			MessageBox.Show(AppSettings.UserSettings.BackupLanguage);
 			//AppSettings.UserSettings.TargetLanguage = (AppSettings.UserSettings.TargetLanguage == "en" ? "cs" : "en");
 			//AppSettings.UserSettings.BackupLanguage = (AppSettings.UserSettings.BackupLanguage == "en" ? "cs" : "en");
 			//AppSettings.UserSettings.LoadTranslationsOnStartup = (!AppSettings.UserSettings.LoadTranslationsOnStartup);
