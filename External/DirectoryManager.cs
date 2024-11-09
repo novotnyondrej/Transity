@@ -49,7 +49,22 @@ namespace Transity.External
 				//Kontrola, jestli se nam podarilo najit slozku
 				if (info is null) throw new TranslatableException(new("project-directory-not-found", "exceptions"));
 				//OK
-				return info.FullName;
+				return info.FullName + "\\";
+			}
+		}
+		//Ziska slozku s AppData aktualniho uzivatele
+		public static string AppDataDirectory
+		{
+			get
+			{
+				try
+				{
+					return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\";
+				}
+				catch (Exception)
+				{
+					throw new TranslatableException(new("failed-to-get-appdata", "exceptions"));
+				}
 			}
 		}
 
@@ -97,7 +112,7 @@ namespace Transity.External
 		{
 			try
 			{
-				Directory.Delete(path);
+				Directory.Delete(path, true);
 				return true;
 			}
 			catch (ArgumentException)

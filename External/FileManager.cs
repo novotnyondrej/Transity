@@ -12,7 +12,39 @@ namespace Transity.External
 		{
 			return File.Exists(path);
 		}
-
+		//Smaze soubor
+		public static bool Delete(string path)
+		{
+			try
+			{
+				File.Delete(path);
+				return true;
+			}
+			catch (ArgumentException)
+			{
+				throw new TranslatableException(new("invalid-path-of-file", "exceptions"));
+			}
+			catch (UnauthorizedAccessException)
+			{
+				throw new TranslatableException(new("unauthorized-access", "exceptions"));
+			}
+			catch (PathTooLongException)
+			{
+				throw new TranslatableException(new("path-too-long", "exceptions"));
+			}
+			catch (DirectoryNotFoundException)
+			{
+				throw new TranslatableException(new("directory-not-found", "exceptions"));
+			}
+			catch (NotSupportedException)
+			{
+				throw new TranslatableException(new("path-not-supported", "exceptions"));
+			}
+			catch (IOException)
+			{
+				throw new TranslatableException(new("path-inaccessible", "exceptions"));
+			}
+		}
 
 		//Ziska nazev souboru podle cesty
 		public static string GetFileName(string path)

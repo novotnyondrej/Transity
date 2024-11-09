@@ -25,7 +25,7 @@ namespace Transity.Content
 	internal static class Translator
 	{
 		//Umisteni slozky s preklady
-		public static string TranslationsLocation { get => DirectoryManager.ProjectDirectory + "\\Resources\\Translations\\"; }
+		public static string TranslationsLocation { get => DirectoryManager.ProjectDirectory + "Resources\\Translations\\"; }
 		//Zalozni jazyk pri neuspechu nacteni prekladu
 		public static string BackupLanguage { get; } = "en";
 		//Pozadovany jazyk

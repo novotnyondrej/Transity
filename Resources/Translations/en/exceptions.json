@@ -12,8 +12,15 @@
 	"directory-access-insufficient-permission": "Insufficient permission to access directory",
 	"file-read-insufficient-permission": "Insufficient permission to read file",
 	"file-write-insufficient-permission": "Insufficient permission to write to file",
+	"failed-to-get-appdata": "Failed to get AppData folder",
 	"path-inaccessible": "Path is not accessible",
 	"project-directory-not-found": "Project directory could not be deteremined",
 	"load-translation-set-failed": "Failed to load translation set \"{set-name}\" in \"{language}\" language",
-	"load-translation-set-failed-due-to-error": "Failed to load translation set \"{set-name}\" in \"{language}\" language - \"{original-message}\""
+	"load-translation-set-failed-due-to-error": "Failed to load translation set \"{set-name}\" in \"{language}\" language - \"{original-message}\"",
+	"invalid-application-data-location": "Invalid application data location",
+	"invalid-application-data-file-name": "Invalid application data file name",
+	"application-data-load-error": "Failed to load application data \"{file-name}\" in \"{location}\": \"{original-message}\"",
+	"application-data-save-error": "Failed to save application data \"{file-name}\" in \"{location}\": \"{original-message}\"",
+	"application-data-delete-error": "Failed to delete application data \"{file-name}\" in \"{location}\": \"{original-message}\"",
+	"application-all-data-delete-error": "Failed to delete application data: \"{original-message}\""
 }

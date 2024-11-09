@@ -27,10 +27,18 @@ namespace Transity
 			//MessageBox.Show(Translator.LoadTranslation(new("cs"), "cs"));
 			//MessageBox.Show(Translator.LoadTranslation(new("en"), "cs"));
 			//MessageBox.Show(Translator.LoadTranslation(new("de"), "cs"));
+			/*AppDataManager.LoadData("test", "test", "test");
+			AppDataManager.LoadData("test\\..\\..\\", "test", "test");
+			AppDataManager.SaveData("test\\", "test", "test");
+			AppDataManager.SaveData("test", "test2", "test");
+			AppDataManager.SaveData("test\\..", "test", "test");
+			MessageBox.Show(AppDataManager.LoadData("test", "test", "test"));
+			AppDataManager.DeleteData("test\\", "test2");*/
+			//AppDataManager.DeleteAllData();
 
 			try
 			{
-				throw new DetailedTranslatableException(new("test-exception", "exceptions"));
+				//throw new DetailedTranslatableException(new("test-exception", "exceptions"));
 			}
 			catch (Exception e)
 			{
