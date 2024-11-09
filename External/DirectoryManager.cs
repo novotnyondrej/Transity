@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Security;
 using Transity.General.Exceptions;
 
 namespace Transity.External
@@ -6,6 +7,53 @@ namespace Transity.External
 	//Stara se o slozky a jejich spravu
 	internal static class DirectoryManager
 	{
+		//Ziska slozku tohoto projektu
+		public static string ProjectDirectory
+		{
+			get
+			{
+				DirectoryInfo? info = null;
+
+				try
+				{
+					info = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent;
+				}
+				catch (ArgumentException)
+				{
+					throw new TranslatableException(new("invalid-path-of-directory", "exceptions"));
+				}
+				catch (UnauthorizedAccessException)
+				{
+					throw new TranslatableException(new("unauthorized-access", "exceptions"));
+				}
+				catch (PathTooLongException)
+				{
+					throw new TranslatableException(new("path-too-long", "exceptions"));
+				}
+				catch (DirectoryNotFoundException)
+				{
+					throw new TranslatableException(new("directory-not-found", "exceptions"));
+				}
+				catch (NotSupportedException)
+				{
+					throw new TranslatableException(new("path-not-supported", "exceptions"));
+				}
+				catch (SecurityException)
+				{
+					throw new TranslatableException(new("directory-access-insufficient-permission", "exceptions"));
+				}
+				catch (IOException)
+				{
+					throw new TranslatableException(new("path-inaccessible", "exceptions"));
+				}
+				//Kontrola, jestli se nam podarilo najit slozku
+				if (info is null) throw new TranslatableException(new("project-directory-not-found", "exceptions"));
+				//OK
+				return info.FullName;
+			}
+		}
+
+
 		//Vyhodnoti zda cesta dana slozka existuje nebo ne
 		public static bool Exists(string path)
 		{

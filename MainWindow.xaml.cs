@@ -23,7 +23,6 @@ namespace Transity
 		public MainWindow()
 		{
 			InitializeComponent();
-			Translator.LoadAllLanguages();
 			//MessageBox.Show(Translator.LoadTranslation(new TranslationKey("exception-details-text")));
 			//MessageBox.Show(Translator.LoadTranslation(new("cs"), "cs"));
 			//MessageBox.Show(Translator.LoadTranslation(new("en"), "cs"));

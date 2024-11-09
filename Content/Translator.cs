@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.DirectoryServices;
 using System.Text.RegularExpressions;
 using Transity.External;
+using Transity.General;
+using Transity.General.Exceptions;
 
 namespace Transity.Content
 {
@@ -22,181 +25,197 @@ namespace Transity.Content
 	internal static class Translator
 	{
 		//Umisteni slozky s preklady
-		public static string TranslationsLocation { get; } = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName + "/Resources/Translations/";
+		public static string TranslationsLocation { get => DirectoryManager.ProjectDirectory + "\\Resources\\Translations\\"; }
 		//Zalozni jazyk pri neuspechu nacteni prekladu
 		public static string BackupLanguage { get; } = "en";
 		//Pozadovany jazyk
 		public static string DesiredLanguage { get; } = "cs";
+		//Zda se maji jazyky nacitat se spustenim aplikace, ci pouze na vyzadani
+		public static bool LoadOnStartup { get; } = false;
 
 
-		//Nactene preklady, kde klicem je oznaceni jazyka, hodnotou je Dictionary<string, Dictionary<string, string>>, ve ktere je klicem nazev setu a hodnotou jednotlive preklady
+		//Seznam dostupnych jazyku
+		//To ze je seznam vyplneny, neznamena ze vsechny jazyky jsou nactene, pouze to poukazuje na dostupnost daneho jazyka
+		private static List<string> _AvailableLanguages { get; set; }
+		public static IEnumerable<string> AvailableLanguages => _AvailableLanguages;
+		//Seznam dostupnych sad prekladu pro jednotlive jazyky
+		//Klicem je oznaceni jazyka, hodnotou je seznam nazvu jednotlivych sad
+		//Pokud dany jazyk nema definovane dostupne sady prekladu, pak sady existovat mohou, ale nejsou jenom nactene
+		//Nektere prekladove sady se nemusi podarit nacist, pokud se tomu tak stane, sada bude odebrana ze seznamu a program se ji tak nadale nebude snazit nacist
+		//Poukazuje pouze na dostupnost prekladovych sad - nenaznacuje, ze je sada nactena
+		private static Dictionary<string, List<string>> AvailableLanguageSets { get; } = [];
+		//Nactene preklady
+		//Klicem 1 je oznaceni jazyka
+		//Klicem 2 je nazev prekladove sady
+		//Klicem 3 je prekladovy klic
+		//Hodnotou je vysledny preklad
 		private static Dictionary<string, Dictionary<string, Dictionary<string, string>>> LoadedTranslations { get; } = [];
-		//Seznam kompletne nactenych jazyku
-		private static List<string> LoadedLanguages { get; } = [];
 
 
-		//Zda je jazyk plne nacteny
-		private static bool IsLanguageFullyLoaded(string languageKey) => LoadedLanguages.Contains(languageKey);
-		//Zda jazyk existuje
-		private static bool IsLanguageLoaded(string languageKey) => LoadedTranslations.ContainsKey(languageKey);
-		//Zda set existuje
-		private static bool IsSetLoaded(string languageKey, string setKey) => IsLanguageLoaded(languageKey) && LoadedTranslations[languageKey].ContainsKey(setKey);
-
-
-		//Nacte set ze souboru
-		private static Dictionary<string, string> LoadSetFromFile(string languageKey, string setKey)
+		//Prvotni nacteni
+		static Translator()
 		{
-			//Zajisteni platnych klicu
-			languageKey = ToValidKey(languageKey);
-			setKey = ToValidKey(setKey);
-
-			//Cesta k setu
-			string setLocation = $"{TranslationsLocation}{languageKey}/{setKey}.json";
-			//Nacteni setu
-			Dictionary<string, string> set = FileManager.GetJsonContents<Dictionary<string, string>>(setLocation) ?? [];
-			//Zajisteni platnych klicu
-			set = set.ToDictionary(
-				(pair) => ToValidKey(pair.Key),
-				(pair) => pair.Value
-			);
-			return set;
-		}
-		//Nacte nazvy dostupnych setu v jazyce
-		private static IEnumerable<string> LoadLanguageSetNames(string languageKey)
-		{
-			//Zajisteni platneho klice
-			languageKey = ToValidKey(languageKey);
-
-			//Cesta k jazyku
-			string languageLocation = $"{TranslationsLocation}{languageKey}/";
-			//Ziskani vsech setu daneho jazyka
-			IEnumerable<string> sets = DirectoryManager.GetFiles(languageLocation);
-			//Prevod pouze na nazvy setu
-			sets = sets.Where(
-				(setLocation) => FileManager.GetFileExtension(setLocation) == "json"
-			).Select(
-				(setLocation) => FileManager.GetFileName(setLocation)
-			);
-			return sets;
+			//Nacteni dostupnych jazyku
+			_AvailableLanguages = [];
+			LoadAvailableLanguages();
+			//Nacteni prekladu pri startu, pokud tomu tak ma byt
+			if (LoadOnStartup)
+			{
+				LoadAllTranslationSets(DesiredLanguage);
+				LoadAllTranslationSets(BackupLanguage);
+				//Nacteni sady s preklady jazyku pro vsechny ostatni jazyky
+				foreach (string language in _AvailableLanguages)
+				{
+					LoadTranslationSet(language, "languages");
+				}
+			}
 		}
 		//Nacte dostupne jazyky
-		private static IEnumerable<string> LoadAvailableLanguageNames()
+		private static void LoadAvailableLanguages()
 		{
-			//Ziskani vsech slozek
-			IEnumerable<string> languages = DirectoryManager.GetDirectories(TranslationsLocation);
-			//Prevod na nazvy jazyku
-			languages = languages.Select(
-				(languageLocation) => DirectoryManager.GetDirectoryName(languageLocation) ?? ""
-			).Where(
-				(language) => language.Length > 0
-			);
-			return languages;
+			//Ziskani jazykovych sad ve slozce s preklady
+			IEnumerable<string> availableLanguagesPaths = DirectoryManager.GetDirectories(TranslationsLocation);
+			//Ziskani nazvu jazyku
+			IEnumerable<string> availableLanguages = availableLanguagesPaths.Select(DirectoryManager.GetDirectoryName);
+			//Filtrace neplatnych nazvu
+			availableLanguages = availableLanguages.Where((language) => language == ToValidKey(language));
+			_AvailableLanguages = availableLanguages.ToList();
+		}
+		//Nacte dostupne prekladove sady pro dany jazyk
+		private static IEnumerable<string> GetAvailableTranslationSetNames(string language)
+		{
+			//Kontrola, jestli je jazyk podporovany
+			if (!IsLanguageSupported(language)) return [];
+			//Pokud jiz byly prekladove sady nacteny drive, vratime je
+			if (AvailableLanguageSets.TryGetValue(language, out List<string>? translationSetNames)) return translationSetNames;
+
+			//Pokud prekladove sady doposud nebyly nacteny, napravime to
+			IEnumerable<string> availableTranslationSetPaths = DirectoryManager.GetFiles(TranslationsLocation + "\\" + language);
+			//Filtrace souboru s priponou json
+			availableTranslationSetPaths = availableTranslationSetPaths.Where((setPath) => FileManager.GetFileExtension(setPath) == "json");
+
+			//Ziskani nazvu prekladovych sad
+			IEnumerable<string> availableTranslationSetNames = availableTranslationSetPaths.Select(FileManager.GetFileName);
+			//Filtrace neplatnych nazvu sad
+			availableTranslationSetNames = availableTranslationSetNames.Where((setName) => setName == ToValidKey(setName));
+
+			//Ulozeni dostupnych sad pro pristi nacteni
+			AvailableLanguageSets[language] = availableTranslationSetNames.ToList();
+			return availableTranslationSetNames;
+		}
+		//Nacte prekladovou sadu
+		private static Dictionary<string, string> LoadTranslationSet(string language, string setName)
+		{
+			//Kontrola, jestli je prekladova sada podporovana
+			if (!IsTranslationSetSupported(language, setName)) return [];
+
+			//Vysledna prekladova sada
+			Dictionary<string, string>? translationSet;
+			//Pokud jiz byla prekladove sada nactena drive, vratime ji
+			if (LoadedTranslations.TryGetValue(language, out Dictionary<string, Dictionary<string, string>>? translationSets))
+			{
+				if (translationSets.TryGetValue(setName, out translationSet)) return translationSet;
+			}
+			
+			//Pokud prekladova sada doposud nebyla nactena, napravime to
+			try
+			{
+				translationSet = FileManager.GetJsonContents<Dictionary<string, string>>(TranslationsLocation + "\\" + language + "\\" + setName + ".json");
+			}
+			catch (Exception exception)
+			{
+				//Prekladovou sadu se nepodarilo nacist, pravdepodobne je v danem souboru chyba
+				//Odebrani sady ze seznamu dostupnych sad, protoze ji nelze nacist, abychom se neobtezovali ji priste nacist znovu
+				RemoveAvailableTranslationSet(language, setName);
+				//Vyhozeni vyjimky
+				throw new TranslatableException(new(
+					"load-translation-set-failed-due-to-error",
+					"exceptions",
+					new() {
+						{ "language", language },
+						{ "set-name", setName },
+						{ "original-message", exception.Message }
+					}
+				));
+			}
+			//Pokud sada nebyla nactena, pravdepodobne nastala nejaka chyba
+			if (translationSet is null)
+			{
+				RemoveAvailableTranslationSet(language, setName);
+				//Vyhozeni vyjimky
+				throw new TranslatableException(new(
+					"load-translation-set-failed",
+					"exceptions",
+					new() {
+						{ "language", language },
+						{ "set-name", setName }
+					}
+				));
+			}
+			//Pokud je sada prazdna, tak neni treba si o ni udrzovat info
+			if (translationSet.Count <= 0)
+			{
+				//Odebrani sady, protoze je zbytecna
+				RemoveAvailableTranslationSet(language, setName);
+				return translationSet;
+			}
+
+			//Sada byla uspesne nactena, pridame ji do seznamu nactenych prekladu pro pristi pouziti
+			if (!LoadedTranslations.ContainsKey(language)) LoadedTranslations[language] = [];
+			LoadedTranslations[language][setName] = translationSet;
+			//OK
+			return translationSet;
+		}
+		//Nacte vsechny prekladove sady pro dany jazyk
+		private static Dictionary<string, Dictionary<string, string>> LoadAllTranslationSets(string language)
+		{
+			//Kontrola, ze je jazyk podporovan
+			if (!IsLanguageSupported(language)) return [];
+			//Ziskani vsech dostupnych sad
+			IEnumerable<string> availableTranslationSets = GetAvailableTranslationSetNames(language);
+			//Vysledne prekladove sady
+			Dictionary<string, Dictionary<string, string>> translationSets = [];
+
+			//Nacteni prekladovych sad
+			foreach (string setName in availableTranslationSets)
+			{
+				//Pokus o nacteni sady
+				Dictionary<string, string> translationSet = SafeExecutor.Execute(LoadTranslationSet, language, setName, []);
+				//Prazdne sady jsou nam k nicemu
+				if (translationSet.Count <= 0) continue;
+				//Pridani sady
+				translationSets[setName] = translationSet;
+			}
+			return translationSets;
+		}
+		//Nacte vsechny preklady
+		private static void LoadAllTranslations()
+		{
+			foreach (string language in _AvailableLanguages) LoadAllTranslationSets(language);
 		}
 
 
-		//Nacte set
-		private static void LoadSet(string languageKey, string setKey)
+		//Odebere dostupnou prekladovou sadu (napriklad proto, ze je v ni chyba)
+		private static void RemoveAvailableTranslationSet(string language, string setName)
 		{
-			//Zajisteni platnych klicu
-			languageKey = ToValidKey(languageKey);
-			setKey = ToValidKey(setKey);
+			//Kontrola, jestli je jazyk podporovan
+			if (!IsLanguageSupported(language)) return;
+			//Odebrani sady
+			AvailableLanguageSets[language].Remove(setName);
 
-			//Jestli je set nacteny, neni duvod to delat znovu
-			if (IsSetLoaded(languageKey, setKey)) return;
-
-			//Nacteni setu
-			Dictionary<string, string> set = LoadSetFromFile(languageKey, setKey);
-			//Kontrola setu
-			if (set.Count <= 0) return;
-
-			//Pridani setu k jazyku
-			if (!LoadedTranslations.ContainsKey(languageKey)) LoadedTranslations[languageKey] = [];
-			LoadedTranslations[languageKey][setKey] = set;
-		}
-		//Nacte jazyk
-		public static void LoadLanguage(string languageKey)
-		{
-			//Klic jazyka
-			languageKey = ToValidKey(languageKey);
-			//Kontrola, jestli jazyk uz neni nacteny - abychom nemuseli nacitat vsechno od zacatku
-			if (LoadedLanguages.Contains(languageKey)) return;
-
-			//Ziskani vsech setu daneho jazyka
-			IEnumerable<string> sets = LoadLanguageSetNames(languageKey);
-			//Nacteni prekladu jednotlivych setu
-			foreach (string setKey in sets)
+			//Pokud jiz nejsou zadne sady v danem jazyce, neni treba si o nem udrzovat zaznam
+			if (AvailableLanguageSets[language].Count <= 0)
 			{
-				LoadSet(languageKey, setKey);
-			}
-			//Pridani jazyku do seznamu nactenych jazyku
-			LoadedLanguages.Add(languageKey);
-        }
-		//Nacte vsechny jazyky
-		public static void LoadAllLanguages()
-		{
-			IEnumerable<string> languages = LoadAvailableLanguageNames();
-			//Nacteni jednotlivych jazyku
-			foreach (string languageKey in languages)
-			{
-				LoadLanguage(languageKey);
+				_AvailableLanguages.Remove(language);
+				AvailableLanguageSets.Remove(language);
 			}
 		}
 
 
-		//Nacte preklad
-		public static string LoadTranslation(TranslationKey key, string? targetLanguage = null)
-		{
-			string translationKey = ToValidKey(key.Key);
-			string? targetSet = key.Set;
-			string? setKey = (targetSet != null ? ToValidKey(targetSet) : null);
-			string languageKey = ToValidKey(targetLanguage ?? DesiredLanguage);
-			//Zda set je definovan
-			bool hasSet = (setKey != null);
-
-			//Pokud je specifikovan set, nacteme ho
-			if (hasSet) LoadSet(languageKey, setKey ?? "");
-			//Jinak musime bohuzel nacist cely jazyk
-			else LoadLanguage(languageKey);
-
-
-			//Zda je jazyk/set dostupny
-			bool languageAvailable = (IsLanguageLoaded(languageKey) && (!hasSet || IsSetLoaded(languageKey, setKey ?? "")));
-
-
-			//Set, ktery splnuje pozadavky
-			Dictionary<string, string>? matchingSet = null;
-			//Pokus o nalezeni setu
-			if (languageAvailable)
-			{
-				if (hasSet)
-				{
-					matchingSet = LoadedTranslations[languageKey][setKey ?? ""];
-				}
-				else
-				{
-					matchingSet = LoadedTranslations[languageKey].Values.FirstOrDefault(
-						(set) => set.ContainsKey(translationKey)
-					);
-				}
-			}
-			//Nacteni prekladu
-			string? translation = matchingSet?.GetValueOrDefault(translationKey);
-
-
-			//Kontrola prekladu
-			if (translation == null || translation.Length <= 0)
-			{
-				//Preklad neexistuje
-				//Pokud jsme prave nenacitali zalozni jazyk, pokusime se najit preklad pro nej
-				if (languageKey != BackupLanguage) return LoadTranslation(key, BackupLanguage);
-				//Pokud jsme prave nacitali zalozni jazyk, a pro nej to taky nevyslo, nezbyva nam nic jineho nez vratit klic ve sve plne krase
-				return translationKey;
-			}
-			//Nacteni promennych do prekladu
-			return key.FillVariables(translation ?? "", languageKey);
-		}
-
-
+		//Zda je jazyk podporovan
+		public static bool IsLanguageSupported(string language) => _AvailableLanguages.Contains(language);
+		//Zda je prekladova sada podporovana
+		private static bool IsTranslationSetSupported(string language, string setName) => GetAvailableTranslationSetNames(language).Contains(setName);
 		//Prevede string na platny klic
 		private static string ToValidKey(string key)
 		{
@@ -211,6 +230,46 @@ namespace Transity.Content
 			//Odebrani opakujicich se polmcek
 			key = Regex.Replace(key, @"(-+)", "-");
 			return key;
+		}
+
+
+		//Nacte preklad
+		public static string LoadTranslation(TranslationKey key, string? targetLanguage = null)
+		{
+			string language = (ToValidKey(targetLanguage ?? DesiredLanguage));
+			string? setName = (key.Set is not null ? ToValidKey(key.Set) : null);
+			string translationKey = ToValidKey(key.Key);
+
+			//Prekladova sada, ktera splnuje pozadavek
+			Dictionary<string, string> targetTranslationSet;
+			//Pokud zname prekladovou sadu, muzeme ji rovnou nacist
+			if (setName is not null)
+			{
+				//Nacteni konkretni prekladove sady
+				targetTranslationSet = SafeExecutor.Execute(LoadTranslationSet, language, setName, []);
+			}
+			else
+			{
+				//Nacteni vsech prekladovych sad v jazyce
+				Dictionary<string, Dictionary<string, string>> allTranslationSets = LoadAllTranslationSets(language);
+				//Vybrani vyhovujici sady
+				targetTranslationSet = allTranslationSets.FirstOrDefault(
+					(pair) => pair.Value.ContainsKey(translationKey)
+				).Value;
+			}
+			//Kontrola, jestli preklad existuje
+			if (!targetTranslationSet.ContainsKey(translationKey))
+			{
+				//Preklad v tomto jazyce neexistuje.
+				//Muzeme se ho pokusit v nasem pozadovanem jazyce
+				if (language != DesiredLanguage && language != BackupLanguage) return LoadTranslation(key, DesiredLanguage);
+				//Nebo take v zaloznim jazyce
+				if (language == DesiredLanguage) return LoadTranslation(key, BackupLanguage);
+				//Tak toto je konecna, uz nemame dalsi tipy, musime proste vratit nazev klice
+				return translationKey;
+			}
+			//Vraceni prekladu
+			return key.FillVariables(targetTranslationSet[translationKey], language);
 		}
 	}
 }

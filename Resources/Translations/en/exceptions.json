@@ -9,7 +9,11 @@
 	"directory-not-found": "Directory not found",
 	"file-not-found": "File not found",
 	"path-not-supported": "Path is not supported",
+	"directory-access-insufficient-permission": "Insufficient permission to access directory",
 	"file-read-insufficient-permission": "Insufficient permission to read file",
 	"file-write-insufficient-permission": "Insufficient permission to write to file",
-	"path-inaccessible": "Path is not accessible"
+	"path-inaccessible": "Path is not accessible",
+	"project-directory-not-found": "Project directory could not be deteremined",
+	"load-translation-set-failed": "Failed to load translation set \"{set-name}\" in \"{language}\" language",
+	"load-translation-set-failed-due-to-error": "Failed to load translation set \"{set-name}\" in \"{language}\" language - \"{original-message}\""
 }
