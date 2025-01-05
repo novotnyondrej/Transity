@@ -12,5 +12,13 @@
 	"medium-size" : "Medium",
 	"large-size" : "Large",
 	"cancel" : "Cancel",
-	"create-game" : "Create game"
+	"create-game" : "Create game",
+	"primary-language" : "Primary language",
+	"secondary-language" : "Secondary language",
+	"back" : "Back",
+	"save-settings" : "Save settings",
+	"load-languages-on-startup" : "Load languages on startup",
+	"yes" : "Yes",
+	"no" : "No",
+	"load-pages-on-startup" : "Load pages on startup"
 }

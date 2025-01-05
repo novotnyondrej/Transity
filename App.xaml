@@ -4,6 +4,59 @@
              xmlns:local="clr-namespace:Transity"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
-    </Application.Resources>
+		<Style TargetType="Label" x:Key="ThriftyLabel">
+			<Setter Property="Margin" Value="3px"></Setter>
+			<Setter Property="Padding" Value="5px"></Setter>
+			<Setter Property="FontSize" Value="20px"></Setter>
+			<Setter Property="Foreground" Value="#222"></Setter>
+		</Style>
+		<Style TargetType="Label" x:Key="RegularLabel" BasedOn="{StaticResource ThriftyLabel}">
+			<Setter Property="Padding" Value="20px 10px"></Setter>
+		</Style>
+		<Style TargetType="Label" x:Key="Title" BasedOn="{StaticResource RegularLabel}">
+			<Setter Property="FontSize" Value="40px"></Setter>
+		</Style>
+		<Style TargetType="Button" x:Key="RegularButton">
+			<Setter Property="Cursor" Value="Hand"></Setter>
+			<Setter Property="Margin" Value="3px"></Setter>
+			<Setter Property="Padding" Value="20px 10px"></Setter>
+			<Setter Property="FontSize" Value="20px"></Setter>
+			<Setter Property="Background" Value="#eee"></Setter>
+			<Setter Property="BorderBrush" Value="#222"></Setter>
+			<Setter Property="Foreground" Value="#222"></Setter>
+		</Style>
+		<Style TargetType="TextBox" x:Key="RegularTextbox">
+			<Setter Property="MaxHeight" Value="100px"></Setter>
+			<Setter Property="Margin" Value="3px"></Setter>
+			<Setter Property="Padding" Value="10px 10px"></Setter>
+			<Setter Property="FontSize" Value="20px"></Setter>
+			<Setter Property="Foreground" Value="#222"></Setter>
+		</Style>
+		<Style TargetType="ComboBox" x:Key="RegularComboBox">
+			<Setter Property="Cursor" Value="Hand"></Setter>
+			<Setter Property="Margin" Value="3px"></Setter>
+			<Setter Property="FontSize" Value="20px"></Setter>
+			<Setter Property="Background" Value="#eee"></Setter>
+			<Setter Property="BorderBrush" Value="#222"></Setter>
+			<Setter Property="Foreground" Value="#222"></Setter>
+			<Setter Property="Padding" Value="20px 10px"></Setter>
+		</Style>
+		<Style TargetType="CheckBox" x:Key="RegularCheckBox">
+			<Setter Property="Margin" Value="3px"></Setter>
+			<Setter Property="Background" Value="#eee"></Setter>
+			<Setter Property="BorderBrush" Value="#222"></Setter>
+			<Setter Property="Foreground" Value="#222"></Setter>
+			<Setter Property="Padding" Value="20px 10px"></Setter>
+			<Setter Property="VerticalAlignment" Value="Center"></Setter>
+			<Setter Property="LayoutTransform">
+				<Setter.Value>
+					<ScaleTransform ScaleX="1.5" ScaleY="1.5"/>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style TargetType="Grid" x:Key="InputWrapper">
+			<Setter Property="Width" Value="400px"></Setter>
+			<Setter Property="MaxWidth" Value="400px"></Setter>
+		</Style>
+	</Application.Resources>
 </Application>

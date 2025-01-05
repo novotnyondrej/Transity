@@ -5,15 +5,15 @@ using Transity.General.Exceptions;
 namespace Transity.Pages
 {
 	/// <summary>
-	/// Interaction logic for NewGame.xaml
+	/// Interaction logic for NewGamePage.xaml
 	/// </summary>
-	public partial class NewGame : MainWindowPage
+	public partial class NewGamePage : MainWindowPage
 	{
 		//Jiz existujici instance
-		private static Dictionary<MainWindow, NewGame> Instances = new();
+		private static Dictionary<MainWindow, NewGamePage> Instances = new();
 
 		//Konstruktor
-		public NewGame(MainWindow parentWindow) : base(parentWindow)
+		public NewGamePage(MainWindow parentWindow) : base(parentWindow)
 		{
 			//Kontrola, jestli uz neexistuje
 			if (Instances.ContainsKey(parentWindow)) throw new DetailedTranslatableException(new("page-already-exists", "exceptions"));
@@ -23,12 +23,12 @@ namespace Transity.Pages
 			InitializeComponent();
 		}
 		//Ziska instanci stranky
-		public static NewGame GetInstance(MainWindow parentWindow)
+		public static NewGamePage GetInstance(MainWindow parentWindow)
 		{
 			if (Instances.ContainsKey(parentWindow))
 			{
 				//Instance jiz existuje, pouze ji ziskame, prelozime a vratime
-				NewGame instance = Instances[parentWindow];
+				NewGamePage instance = Instances[parentWindow];
 				instance.Preload();
 				return instance;
 			}
@@ -54,7 +54,7 @@ namespace Transity.Pages
 		//Uzivatel klikl na tlacitko zrusit
 		public void OnCancelButtonClicked(object sender, RoutedEventArgs e)
 		{
-			ParentWindow.ChangePage(MainMenu.GetInstance(ParentWindow));
+			ParentWindow.ChangePage(MainMenuPage.GetInstance(ParentWindow));
 		}
 	}
 }

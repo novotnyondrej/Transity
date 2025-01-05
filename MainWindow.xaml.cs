@@ -28,13 +28,29 @@ namespace Transity
 		{
 			//Inicializace
 			InitializeComponent();
+			//Prvotni nacteni stranek
+			OnPageStrategyChanged(AppSettings.UserSettings.LoadPagesOnStartup);
+			//Event listener na zmenu strategie
+			AppSettings.UserSettings.OnPagesLoadStrategyChanged += OnPageStrategyChanged;
 			//Vychozi stranka
-			ChangePage(MainMenu.GetInstance(this));
+			ChangePage(MainMenuPage.GetInstance(this));
 		}
 		//Zmeni stranku
 		public void ChangePage(TranslatablePage<MainWindow> page)
 		{
 			MainFrame.Navigate(page);
 		}
+
+		//Event listener na zmenu strategie nacitani stranek
+		private void OnPageStrategyChanged(bool newValue)
+		{
+			//Pokud se stranky nemaji nacitat, tak neni co menit
+			if (newValue == false) return;
+			//Probehne nacteni stranek
+			MainMenuPage.GetInstance(this);
+			NewGamePage.GetInstance(this);
+			SettingsPage.GetInstance(this);
+		}
+
 	}
 }

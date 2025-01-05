@@ -13,7 +13,7 @@ namespace Transity.Data
 
 
 		//Vychozi nastaveni
-		public static AppSettings DefaultSettings = new("cs", "en", false);
+		public static AppSettings DefaultSettings = new("cs", "en", false, false);
 		//Uzivatelske nastaveni
 		public static AppSettings UserSettings;
 
@@ -30,6 +30,9 @@ namespace Transity.Data
 		//Event na zmenu strategie nacitani jazyku
 		public delegate void OnTranslationLoadStrategyChangedDelegate(bool newValue);
 		public event OnTranslationLoadStrategyChangedDelegate OnTranslationLoadStrategyChanged;
+		//Event na zmenu strategie nacitani stranek
+		public delegate void OnPagesLoadStrategyChangedDelegate(bool newValue);
+		public event OnPagesLoadStrategyChangedDelegate OnPagesLoadStrategyChanged;
 
 		//Jazyk zobrazeni aplikace
 		private string _TargetLanguage;
@@ -68,7 +71,7 @@ namespace Transity.Data
 				if (!Translator.IsLanguageSupported(value)) return;
 				//Nastaveni jazyka
 				_BackupLanguage = value;
-				OnSettingsChanged.Invoke(nameof(TargetLanguage));
+				OnSettingsChanged.Invoke(nameof(BackupLanguage));
 				OnBackupLanguageChanged.Invoke(current, value);
 			}
 		}
@@ -87,8 +90,27 @@ namespace Transity.Data
 				if (current == value) return;
 				//Nastaveni nastaveni
 				_LoadTranslationsOnStartup = value;
-				OnSettingsChanged.Invoke(nameof(TargetLanguage));
+				OnSettingsChanged.Invoke(nameof(LoadTranslationsOnStartup));
 				OnTranslationLoadStrategyChanged.Invoke(value);
+			}
+		}
+
+		//Zda se maji stranky nacist hned pri spusteni aplikace
+		private bool _LoadPagesOnStartup;
+		[JsonProperty("load-pages-on-startup")]
+		public bool LoadPagesOnStartup
+		{
+			get => _LoadPagesOnStartup;
+			set
+			{
+				//Ziskani aktualni hodnoty
+				bool current = _LoadPagesOnStartup;
+				//Kontrola, jestli se hodnota zmenila
+				if (current == value) return;
+				//Nastaveni nastaveni
+				_LoadPagesOnStartup = value;
+				OnSettingsChanged.Invoke(nameof(LoadPagesOnStartup));
+				OnPagesLoadStrategyChanged.Invoke(value);
 			}
 		}
 
@@ -103,17 +125,19 @@ namespace Transity.Data
 		public AppSettings(
 			string targetLanguage,
 			string backupLanguage,
-			bool loadTranslationsOnStartup
+			bool loadTranslationsOnStartup,
+			bool loadPagesOnStartup
 		)
 		{
 			_TargetLanguage = targetLanguage;
 			_BackupLanguage = backupLanguage;
 			_LoadTranslationsOnStartup = loadTranslationsOnStartup;
+			_LoadPagesOnStartup = loadPagesOnStartup;
 			//Pri zmene nastaveni probehne ulozeni dat
 			OnSettingsChanged += SaveSettings;
 		}
 		//Ulozi nastaveni
-		private void SaveSettings(string propertyName)
+		public void SaveSettings(string propertyName)
 		{
 			AppDataManager.SaveData(null, SaveFileName, this);
 		}

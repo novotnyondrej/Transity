@@ -5,15 +5,15 @@ using Transity.General.Exceptions;
 namespace Transity.Pages
 {
 	/// <summary>
-	/// Interaction logic for MainMenu.xaml
+	/// Interaction logic for MainMenuPage.xaml
 	/// </summary>
-	public partial class MainMenu : MainWindowPage
+	public partial class MainMenuPage : MainWindowPage
 	{
 		//Jiz existujici instance
-		private static Dictionary<MainWindow, MainMenu> Instances = new();
+		private static Dictionary<MainWindow, MainMenuPage> Instances = new();
 
 		//Konstruktor
-		public MainMenu(MainWindow parentWindow) : base(parentWindow)
+		public MainMenuPage(MainWindow parentWindow) : base(parentWindow)
 		{
 			//Kontrola, jestli uz neexistuje
 			if (Instances.ContainsKey(parentWindow)) throw new DetailedTranslatableException(new("page-already-exists", "exceptions"));
@@ -23,12 +23,12 @@ namespace Transity.Pages
 			InitializeComponent();
 		}
 		//Ziska instanci stranky
-		public static MainMenu GetInstance(MainWindow parentWindow)
+		public static MainMenuPage GetInstance(MainWindow parentWindow)
 		{
 			if (Instances.ContainsKey(parentWindow))
 			{
 				//Instance jiz existuje, pouze ji ziskame, prelozime a vratime
-				MainMenu instance = Instances[parentWindow];
+				MainMenuPage instance = Instances[parentWindow];
 				instance.Preload();
 				return instance;
 			}
@@ -45,7 +45,13 @@ namespace Transity.Pages
 		public void OnNewGameButtonClicked(object sender, RoutedEventArgs e)
 		{
 			//Zmena stranky na novou hru
-			ParentWindow.ChangePage(NewGame.GetInstance(ParentWindow));
+			ParentWindow.ChangePage(NewGamePage.GetInstance(ParentWindow));
+		}
+		//Uzivatel kliknul na tlacitko nastaveni
+		public void OnSettingsButtonClicked(object sender, RoutedEventArgs e)
+		{
+			//Zmena stranky na nastaveni
+			ParentWindow.ChangePage(SettingsPage.GetInstance(ParentWindow));
 		}
 		//Uzivatel kliknul na tlacitko ukoncit
 		public void OnExitButtonClicked(object sender, RoutedEventArgs e)

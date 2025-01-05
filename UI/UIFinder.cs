@@ -61,5 +61,14 @@ namespace Transity.UI
 			//Nalezeni vsech elementu
 			foreach (UIElement descendantObject in dependencyObject.GetDescendantsOfType<UIElement>()) yield return descendantObject;
 		}
+		//Vyhleda item podle nazvu
+		public static ComboBoxItem? FindItemByName(this ComboBox comboBox, string name)
+		{
+			foreach (ComboBoxItem item in comboBox.Items)
+			{
+				if (item.Name == name) return item;
+			}
+			return null;
+		}
 	}
 }

@@ -102,7 +102,7 @@ namespace Transity.Content
 
 			//Nacteni jazyku
 			LoadAllTranslationSets(targetLanguage);
-			LoadAllTranslationSets(backupLanguage);
+			if (targetLanguage != backupLanguage) LoadAllTranslationSets(backupLanguage);
 			//Nacteni sady s preklady jazyku pro vsechny ostatni jazyky
 			foreach (string language in _AvailableLanguages)
 			{
@@ -218,7 +218,7 @@ namespace Transity.Content
 			Dictionary<string, Dictionary<string, string>> translationSets = [];
 
 			//Nacteni prekladovych sad
-			foreach (string setName in availableTranslationSets)
+			foreach (string setName in availableTranslationSets.ToArray())
 			{
 				//Pokus o nacteni sady
 				Dictionary<string, string> translationSet = SafeExecutor.Execute(LoadTranslationSet, language, setName, []);
@@ -310,7 +310,7 @@ namespace Transity.Content
 				//Muzeme se ho pokusit v nasem pozadovanem jazyce
 				if (language != targetLanguage && language != backupLanguage) return LoadTranslation(key, targetLanguage);
 				//Nebo take v zaloznim jazyce
-				if (language == targetLanguage) return LoadTranslation(key, backupLanguage);
+				if (language == targetLanguage && language != backupLanguage) return LoadTranslation(key, backupLanguage);
 				//Tak toto je konecna, uz nemame dalsi tipy, musime proste vratit nazev klice
 				return translationKey;
 			}

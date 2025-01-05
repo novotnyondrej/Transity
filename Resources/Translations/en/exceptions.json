@@ -24,5 +24,6 @@
 	"application-data-delete-error": "Failed to delete application data \"{file-name}\" in \"{location}\": \"{original-message}\"",
 	"application-all-data-delete-error": "Failed to delete application data: \"{original-message}\"",
 	"nothing-to-translate" : "Nothing to translate",
-	"page-already-exists" : "Page already exists"
+	"page-already-exists" : "Page already exists",
+	"ui-element-not-specified" : "UI element not specified"
 }
