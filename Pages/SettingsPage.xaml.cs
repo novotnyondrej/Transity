@@ -26,7 +26,7 @@ namespace Transity.Pages
 	{
 		//Jiz existujici instance
 		private static Dictionary<MainWindow, SettingsPage> Instances = new();
-
+		
 		//Konstruktor
 		public SettingsPage(MainWindow parentWindow) : base(parentWindow)
 		{
@@ -38,13 +38,13 @@ namespace Transity.Pages
 			InitializeComponent();
 		}
 		//Ziska instanci stranky
-		public static SettingsPage GetInstance(MainWindow parentWindow)
+		public static SettingsPage GetInstance(MainWindow parentWindow, bool forceUpdate = true)
 		{
 			if (Instances.ContainsKey(parentWindow))
 			{
 				//Instance jiz existuje, pouze ji ziskame, prelozime a vratime
 				SettingsPage instance = Instances[parentWindow];
-				instance.Preload();
+				if (forceUpdate) instance.Preload();
 				return instance;
 			}
 			//Vytvorime novou instanci
@@ -108,14 +108,26 @@ namespace Transity.Pages
 			loadTranslationsOnStartupCheckbox.IsChecked = AppSettings.UserSettings.LoadTranslationsOnStartup;
 			loadPagesOnStartupCheckbox.IsChecked = AppSettings.UserSettings.LoadPagesOnStartup;
 		}
+		//Vyhodnoti, zda bylo nastaveni upraveno
+		private bool SettingsModified()
+		{
+			AppSettings userSettings = AppSettings.UserSettings;
+			//Kontrola nastaveni
+			if (userSettings.TargetLanguage != (string)((ComboBoxItem)primaryLanguageComboBox.SelectedItem).Tag) return true;
+			if (userSettings.BackupLanguage != (string)((ComboBoxItem)secondaryLanguageComboBox.SelectedItem).Tag) return true;
+			if (userSettings.LoadTranslationsOnStartup != (loadTranslationsOnStartupCheckbox.IsChecked ?? false)) return true;
+			if (userSettings.LoadPagesOnStartup != (loadPagesOnStartupCheckbox.IsChecked ?? false)) return true;
+			return false;
+		}
 		//Ulozi nastaveni
 		public void SaveSettings()
 		{
+			AppSettings userSettings = AppSettings.UserSettings;
 			//Ulozeni nastaveni
-			AppSettings.UserSettings.TargetLanguage = (string)((ComboBoxItem)primaryLanguageComboBox.SelectedItem).Tag;
-			AppSettings.UserSettings.BackupLanguage = (string)((ComboBoxItem)secondaryLanguageComboBox.SelectedItem).Tag;
-			AppSettings.UserSettings.LoadTranslationsOnStartup = loadTranslationsOnStartupCheckbox.IsChecked ?? false;
-			AppSettings.UserSettings.LoadPagesOnStartup = loadPagesOnStartupCheckbox.IsChecked ?? false;
+			userSettings.TargetLanguage = (string)((ComboBoxItem)primaryLanguageComboBox.SelectedItem).Tag;
+			userSettings.BackupLanguage = (string)((ComboBoxItem)secondaryLanguageComboBox.SelectedItem).Tag;
+			userSettings.LoadTranslationsOnStartup = loadTranslationsOnStartupCheckbox.IsChecked ?? false;
+			userSettings.LoadPagesOnStartup = loadPagesOnStartupCheckbox.IsChecked ?? false;
 		}
 
 
@@ -141,7 +153,8 @@ namespace Transity.Pages
 		//Uzivatel klikl na tlacitko vratit se zpet
 		public void OnBackButtonClicked(object sender, RoutedEventArgs e)
 		{
-			ParentWindow.ChangePage(MainMenuPage.GetInstance(ParentWindow));
+			if (!SettingsModified()) ParentWindow.ChangePage(MainMenuPage.GetInstance(ParentWindow));
+			else ParentWindow.ChangePage(UnsavedSettingsPage.GetInstance(ParentWindow));
 		}
 		//Uzivatel klikl na tlacitko ulozit
 		public void OnSaveSettingsButtonClicked(object sender, RoutedEventArgs e)
