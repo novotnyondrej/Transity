@@ -13,6 +13,8 @@ using Transity.External;
 using Transity.Content;
 using Transity.General.Exceptions;
 using Transity.Data;
+using Transity.Pages;
+using Transity.UI;
 
 namespace Transity
 {
@@ -21,9 +23,18 @@ namespace Transity
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		//Konstruktor
 		public MainWindow()
 		{
+			//Inicializace
 			InitializeComponent();
+			//Vychozi stranka
+			ChangePage(MainMenu.GetInstance(this));
+		}
+		//Zmeni stranku
+		public void ChangePage(TranslatablePage<MainWindow> page)
+		{
+			MainFrame.Navigate(page);
 		}
 	}
 }

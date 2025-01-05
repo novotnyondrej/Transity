@@ -1,0 +1,16 @@
+{
+	"game-title" : "Transity",
+	"continue-game" : "Continue game",
+	"load-game" : "Load game",
+	"new-game" : "New game",
+	"settings" : "Settings",
+	"exit" : "Exit",
+	"game-name" : "Game name",
+	"game-seed" : "Seed",
+	"map-size" : "Map size",
+	"small-size" : "Small",
+	"medium-size" : "Medium",
+	"large-size" : "Large",
+	"cancel" : "Cancel",
+	"create-game" : "Create game"
+}

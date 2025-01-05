@@ -1,0 +1,88 @@
+﻿<ui:MainWindowPage x:Class="Transity.Pages.MainMenu"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Transity.Pages"
+      xmlns:ui="clr-namespace:Transity.UI"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="MainMenu"
+	  Loaded="OnLoadEvent">
+	<ui:MainWindowPage.Resources>
+		<Style TargetType="Button" x:Key="RegularButton">
+			<Setter Property="Cursor" Value="Hand"></Setter>
+			<Setter Property="Margin" Value="3px"></Setter>
+			<Setter Property="Padding" Value="20px 10px"></Setter>
+			<Setter Property="FontSize" Value="20px"></Setter>
+			<Setter Property="Background" Value="#eee"></Setter>
+			<Setter Property="BorderBrush" Value="#222"></Setter>
+			<Setter Property="Foreground" Value="#222"></Setter>
+		</Style>
+		<Style TargetType="Label" x:Key="RegularLabel">
+			<Setter Property="Margin" Value="3px"></Setter>
+			<Setter Property="Padding" Value="20px 10px"></Setter>
+			<Setter Property="FontSize" Value="20px"></Setter>
+			<Setter Property="Foreground" Value="#222"></Setter>
+		</Style>
+		<Style TargetType="Label" x:Key="Title" BasedOn="{StaticResource RegularLabel}">
+			<Setter Property="FontSize" Value="40px"></Setter>
+		</Style>
+	</ui:MainWindowPage.Resources>
+	<Grid HorizontalAlignment="Center">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="50px"></RowDefinition>
+			<RowDefinition Height="Auto"></RowDefinition>
+			<RowDefinition Height="*"></RowDefinition>
+		</Grid.RowDefinitions>
+		<Label Grid.Row="1" Style="{StaticResource Title}" Content="game-title" ui:UITranslator.ContentTranslationKey="game-title" HorizontalAlignment="Center"></Label>
+		<StackPanel Grid.Row="3" Grid.IsSharedSizeScope="True">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition SharedSizeGroup="FullWidth"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+				<Button x:Name="continueGameButton" Style="{StaticResource RegularButton}" Content="continue-game" ui:UITranslator.ContentTranslationKey="continue-game"/>
+			</Grid>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition SharedSizeGroup="FullWidth"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+				<StackPanel Orientation="Horizontal">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition SharedSizeGroup="HalfWidth"></ColumnDefinition>
+						</Grid.ColumnDefinitions>
+						<Button x:Name="loadGameButton" Style="{StaticResource RegularButton}" Content="load-game" ui:UITranslator.ContentTranslationKey="load-game"/>
+					</Grid>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition SharedSizeGroup="HalfWidth"></ColumnDefinition>
+						</Grid.ColumnDefinitions>
+						<Button x:Name="newGameButton" Style="{StaticResource RegularButton}" Content="new-game" ui:UITranslator.ContentTranslationKey="new-game" Click="OnNewGameButtonClicked"/>
+					</Grid>
+				</StackPanel>
+			</Grid>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition SharedSizeGroup="FullWidth"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+				<StackPanel Orientation="Horizontal">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition SharedSizeGroup="HalfWidth"/>
+						</Grid.ColumnDefinitions>
+						<Button x:Name="settingsButton" Style="{StaticResource RegularButton}" Content="settings" ui:UITranslator.ContentTranslationKey="settings"/>
+					</Grid>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition SharedSizeGroup="HalfWidth"/>
+						</Grid.ColumnDefinitions>
+						<Button x:Name="exitButton" Style="{StaticResource RegularButton}" Content="exit" ui:UITranslator.ContentTranslationKey="exit" Click="OnExitButtonClicked"/>
+					</Grid>
+				</StackPanel>
+			</Grid>
+		</StackPanel>
+	</Grid>
+</ui:MainWindowPage>

@@ -22,5 +22,7 @@
 	"application-data-load-error": "Failed to load application data \"{file-name}\" in \"{location}\": \"{original-message}\"",
 	"application-data-save-error": "Failed to save application data \"{file-name}\" in \"{location}\": \"{original-message}\"",
 	"application-data-delete-error": "Failed to delete application data \"{file-name}\" in \"{location}\": \"{original-message}\"",
-	"application-all-data-delete-error": "Failed to delete application data: \"{original-message}\""
+	"application-all-data-delete-error": "Failed to delete application data: \"{original-message}\"",
+	"nothing-to-translate" : "Nothing to translate",
+	"page-already-exists" : "Page already exists"
 }
