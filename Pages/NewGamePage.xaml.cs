@@ -97,7 +97,7 @@ namespace Transity.Pages
 				return;
 			}
 			//Ulozeni nove hry
-			GamesManager.SaveGame(newGame);
+			GamesManager.SaveGame(newGame, false);
 			//Spusteni samotne hry
 		}
 	}

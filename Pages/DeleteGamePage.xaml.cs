@@ -83,8 +83,12 @@ namespace Transity.Pages
 			GamesManager.DeleteGame(ContextGameKey);
 			//Zmena kontextu
 			SetContext(null);
-			//Zpet na nacteni hry
-			ParentWindow.ChangePage(LoadGamePage.GetInstance(ParentWindow));
+			//Presmerovani uzivatele
+			ParentWindow.ChangePage(
+				GamesManager.AvailableGames.Any()
+				? LoadGamePage.GetInstance(ParentWindow)
+				: MainMenuPage.GetInstance(ParentWindow)
+			);
 		}
 		//Uzivatel kliknul na tlacitko zrusit
 		public void OnCancelButtonClicked(object sender, RoutedEventArgs e)

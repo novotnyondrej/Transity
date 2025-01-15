@@ -81,10 +81,10 @@ namespace Transity.Data.Games
 			LoadAvailableGames();
 		}
 		//Ulozi hru
-		public static void SaveGame(Game game)
+		public static void SaveGame(Game game, bool updatePlayTime = true)
 		{
 			//Ulozeni hry
-			SafeExecutor.Execute(game.Save);
+			SafeExecutor.Execute(game.Save, updatePlayTime);
 			//Aktualizace seznamu dostupnych her
 			LoadAvailableGames();
 		}

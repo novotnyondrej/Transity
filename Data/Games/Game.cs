@@ -20,10 +20,10 @@ namespace Transity.Data.Games
 			Player = player ?? new();
 		}
 		//Ulozi hru
-		public void Save()
+		public void Save(bool updatePlayTime = true)
 		{
 			//Ulozeni informaci o hre
-			Information.Save();
+			Information.Save(updatePlayTime);
 			//Ulozeni informaci o hracovi
 			Player.Save(Information);
 		}

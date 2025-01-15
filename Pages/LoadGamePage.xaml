@@ -23,7 +23,7 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition SharedSizeGroup="FullWidth"></ColumnDefinition>
 				</Grid.ColumnDefinitions>
-				<ListBox x:Name="gamesListBox" Style="{StaticResource RegularListBox}" SelectionChanged="OnGamesListSelectionChanged">
+				<ListBox x:Name="gamesListBox" Style="{StaticResource RegularListBox}" SelectionChanged="OnGamesListSelectionChanged" MaxHeight="500px">
 					<ListBoxItem x:Name="gameItemTemplate" Style="{StaticResource RegularListBoxItem}" Content="item-template"></ListBoxItem>
 				</ListBox>
 			</Grid>

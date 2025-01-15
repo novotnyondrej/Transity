@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using Transity.UI;
 using Transity.General.Exceptions;
+using Transity.Data.Games;
 
 namespace Transity.Pages
 {
@@ -34,6 +35,23 @@ namespace Transity.Pages
 			}
 			//Vytvorime novou instanci
 			return new(parentWindow);
+		}
+		//Preloader
+		public override void Preload()
+		{
+			base.Preload();
+			UpdateLoadGameButton();
+			UpdateContinueGameButton();
+		}
+		//Aktualizuje klikatelnost na tlacitko nacist hru
+		private void UpdateLoadGameButton()
+		{
+			loadGameButton.IsEnabled = GamesManager.AvailableGames.Any();
+		}
+		//Aktualizuje klikatelnost na tlacitko pokracovat ve hre
+		private void UpdateContinueGameButton()
+		{
+			continueGameButton.IsEnabled = GamesManager.AvailableGames.Any((pair) => pair.Value.LastPlayedOn is not null);
 		}
 		//Po nacteni elementu probehne automaticky preklad
 		public void OnLoadEvent(object sender, RoutedEventArgs e)

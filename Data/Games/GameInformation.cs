@@ -29,7 +29,7 @@ namespace Transity.Data.Games
 		[JsonProperty("created-on")]
 		public readonly int CreatedOn;
 		[JsonProperty("last-played-on")]
-		public int LastPlayedOn { get; private set; }
+		public int? LastPlayedOn { get; private set; }
 
 		[JsonConstructor]
 		public GameInformation(
@@ -39,7 +39,7 @@ namespace Transity.Data.Games
 			MapSize mapWidth,
 			MapSize mapHeight,
 			int createdOn,
-			int lastPlayedOn
+			int? lastPlayedOn
 		)
 		{
 			ForceValidMapWidth(name, mapWidth);
@@ -48,7 +48,7 @@ namespace Transity.Data.Games
 			if (codeName != ToCodeName(codeName)) codeName = GetAvailableCodeName(name);
 			//Kontrola casu
 			TimeConverter.ForceValidTime(createdOn);
-			TimeConverter.ForceValidTime(lastPlayedOn);
+			if (lastPlayedOn is not null) TimeConverter.ForceValidTime((int)lastPlayedOn);
 
 			Name = name;
 			CodeName = codeName;
@@ -73,7 +73,8 @@ namespace Transity.Data.Games
 			Seed = TranslateSeed(seed);
 			MapWidth = mapWidth;
 			MapHeight = mapHeight;
-			CreatedOn = LastPlayedOn = TimeConverter.GetTime();
+			CreatedOn = TimeConverter.GetTime();
+			LastPlayedOn = null;
 		}
 		//Vyhodi hlasku pokud je neznama sirka mapy
 		private void ForceValidMapWidth(string gameName, MapSize width)
@@ -139,10 +140,10 @@ namespace Transity.Data.Games
 			return proposedCodeName;
 		}
 		//Ulozi nastaveni
-		public void Save()
+		public void Save(bool updatePlayTime = true)
 		{
 			//Aktualizace posledniho hrani hry
-			LastPlayedOn = TimeConverter.GetTime();
+			if (updatePlayTime) LastPlayedOn = TimeConverter.GetTime();
 			//Ulozeni dat
 			AppDataManager.SaveData(GamesManager.GamesLocation + CodeName, SaveFileName, this);
 		}

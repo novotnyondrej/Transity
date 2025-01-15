@@ -63,7 +63,11 @@ namespace Transity.Pages
 				string gameKey = information.CodeName;
 				string name = information.Name;
 				string createTime = TimeConverter.ToTimestamp(information.CreatedOn);
-				string lastPlayTime = TimeConverter.ToTimestamp(information.LastPlayedOn);
+				string lastPlayTime = (
+					information.LastPlayedOn is null
+					? Translator.LoadTranslation(new("never-played", "ui"))
+					: TimeConverter.ToTimestamp((int)information.LastPlayedOn)
+				);
 				//Nacteni prekladu
 				string text = Translator.LoadTranslation(new(
 					"game-item",
