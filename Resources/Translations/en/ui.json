@@ -20,7 +20,7 @@
 	"load-languages-on-startup" : "Load languages on startup",
 	"yes" : "Yes",
 	"no" : "No",
-	"load-pages-on-startup" : "Load pages on startup",
+	"load-pages-on-startup" : "Load all pages on startup",
 	"unsaved-settings-title" : "Unsaved settings",
 	"unsaved-settings-description" : "You've made changes to your current settings, do you want to revert those changes?",
 	"revert-changes" : "Revert changes",

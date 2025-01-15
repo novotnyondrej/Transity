@@ -25,5 +25,7 @@
 	"application-all-data-delete-error": "Failed to delete application data: \"{original-message}\"",
 	"nothing-to-translate" : "Nothing to translate",
 	"page-already-exists" : "Page already exists",
-	"ui-element-not-specified" : "UI element not specified"
+	"ui-element-not-specified" : "UI element not specified",
+	"game-not-found" : "Game \"{code-name}\" not found",
+	"game-name-not-available" : "Game name \"{game-name}\" is not available. Try using other name"
 }

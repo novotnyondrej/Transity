@@ -9,7 +9,7 @@ namespace Transity.Data
 	internal class AppSettings
 	{
 		//Nazev souboru s nastavenim
-		private static string SaveFileName = "app-settings";
+		private static readonly string SaveFileName = "app-settings";
 
 
 		//Vychozi nastaveni
