@@ -49,6 +49,8 @@ namespace Transity
 			if (newValue == false) return;
 			//Probehne nacteni stranek
 			MainMenuPage.GetInstance(this);
+			LoadGamePage.GetInstance(this);
+			DeleteGamePage.GetInstance(this);
 			NewGamePage.GetInstance(this);
 			SettingsPage.GetInstance(this);
 		}

@@ -70,5 +70,14 @@ namespace Transity.UI
 			}
 			return null;
 		}
+		//Vyhleda item podle nazvu
+		public static ListBoxItem? FindItemByName(this ListBox listBox, string name)
+		{
+			foreach (ListBoxItem item in listBox.Items)
+			{
+				if (item.Name == name) return item;
+			}
+			return null;
+		}
 	}
 }

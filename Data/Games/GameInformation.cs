@@ -110,11 +110,12 @@ namespace Transity.Data.Games
 			//Odebrani opakujicich se polmcek
 			codeName = Regex.Replace(codeName, @"(-+)", "-");
 			//Jmeno nesmi zacinat nebo koncit na pomlcku
-			if (codeName.StartsWith('-')) codeName = codeName.Substring(1);
-			if (codeName.EndsWith('-')) codeName = codeName.Substring(0, codeName.Length - 1);
+			if (codeName.StartsWith('-')) codeName = codeName[1..];
+			if (codeName.EndsWith('-')) codeName = codeName[..^1];
 
 			//Kontrola delky jmena
 			if (codeName.Length < 3) codeName = "new-game";
+			if (codeName.Length > 31) codeName = codeName[..31];
 			return codeName;
 		}
 		//Nalezne vhodne kodove jmeno pro hru

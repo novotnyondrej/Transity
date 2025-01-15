@@ -41,6 +41,12 @@ namespace Transity.Pages
 			//Nacteni prekladu
 			Preload();
 		}
+		//Uzivatel kliknul na tlacitko nacist hru
+		public void OnLoadGameButtonClicked(object sender, RoutedEventArgs e)
+		{
+			//Zmena stranky na nacist hru
+			ParentWindow.ChangePage(LoadGamePage.GetInstance(ParentWindow));
+		}
 		//Uzivatel kliknul na tlacitko nova hra
 		public void OnNewGameButtonClicked(object sender, RoutedEventArgs e)
 		{

@@ -71,6 +71,15 @@ namespace Transity.Data.Games
 			);
 			return game;
 		}
+		//Smaze hru
+		public static void DeleteGame(string codeName)
+		{
+			if (!GameExists(codeName)) return;
+			//Smazani hry
+			bool success = SafeExecutor.Execute(DirectoryManager.Delete, AppDataManager.DataLocation + GamesLocation + codeName, false);
+			//Aktualizace seznamu dostupnych her
+			LoadAvailableGames();
+		}
 		//Ulozi hru
 		public static void SaveGame(Game game)
 		{

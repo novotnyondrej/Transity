@@ -54,6 +54,19 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
+		<Style TargetType="ListBox" x:Key="RegularListBox">
+			<Setter Property="Margin" Value="3px"></Setter>
+			<Setter Property="Background" Value="#eee"></Setter>
+			<Setter Property="BorderBrush" Value="#222"></Setter>
+			<Setter Property="Padding" Value="10px"></Setter>
+		</Style>
+		<Style TargetType="ListBoxItem" x:Key="RegularListBoxItem">
+			<Setter Property="FontSize" Value="20px"></Setter>
+			<Setter Property="Padding" Value="20px 10px"></Setter>
+			<Setter Property="Background" Value="#eee"></Setter>
+			<Setter Property="BorderBrush" Value="#222"></Setter>
+			<Setter Property="Foreground" Value="#222"></Setter>
+		</Style>
 		<Style TargetType="Grid" x:Key="InputWrapper">
 			<Setter Property="Width" Value="400px"></Setter>
 			<Setter Property="MaxWidth" Value="400px"></Setter>

@@ -6,7 +6,7 @@ namespace Transity.Data.Games
 	internal class Game
 	{
 		//Informace o hre
-		public readonly GameInformation GameInformation;
+		public readonly GameInformation Information;
 		//Informace o hracovi
 		public readonly Player Player;
 
@@ -16,16 +16,16 @@ namespace Transity.Data.Games
 			Player? player = null
 		)
 		{
-			GameInformation = information;
+			Information = information;
 			Player = player ?? new();
 		}
 		//Ulozi hru
 		public void Save()
 		{
 			//Ulozeni informaci o hre
-			GameInformation.Save();
+			Information.Save();
 			//Ulozeni informaci o hracovi
-			Player.Save(GameInformation);
+			Player.Save(Information);
 		}
 	}
 }

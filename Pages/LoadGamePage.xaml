@@ -1,13 +1,13 @@
-﻿<ui:MainWindowPage x:Class="Transity.Pages.MainMenuPage"
+﻿<ui:MainWindowPage x:Class="Transity.Pages.LoadGamePage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Transity.Pages"
-      xmlns:ui="clr-namespace:Transity.UI"
+	  xmlns:ui="clr-namespace:Transity.UI"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="MainMenu"
+      Title="LoadGame"
 	  Loaded="OnLoadEvent">
 	<Grid HorizontalAlignment="Center">
 		<Grid.RowDefinitions>
@@ -23,43 +23,32 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition SharedSizeGroup="FullWidth"></ColumnDefinition>
 				</Grid.ColumnDefinitions>
-				<Button x:Name="continueGameButton" Style="{StaticResource RegularButton}" Content="continue-game" ui:UITranslator.ContentTranslationKey="continue-game"/>
+				<ListBox x:Name="gamesListBox" Style="{StaticResource RegularListBox}" SelectionChanged="OnGamesListSelectionChanged">
+					<ListBoxItem x:Name="gameItemTemplate" Style="{StaticResource RegularListBoxItem}" Content="item-template"></ListBoxItem>
+				</ListBox>
 			</Grid>
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition SharedSizeGroup="FullWidth"></ColumnDefinition>
 				</Grid.ColumnDefinitions>
-				<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 					<Grid>
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition SharedSizeGroup="HalfWidth"></ColumnDefinition>
+							<ColumnDefinition SharedSizeGroup="HalfWidthButtons"></ColumnDefinition>
 						</Grid.ColumnDefinitions>
-						<Button x:Name="loadGameButton" Style="{StaticResource RegularButton}" Content="load-game" ui:UITranslator.ContentTranslationKey="load-game" Click="OnLoadGameButtonClicked"/>
+						<Button x:Name="backButton" Style="{StaticResource RegularButton}" Content="back" ui:UITranslator.ContentTranslationKey="back" Click="OnBackButtonClicked"/>
 					</Grid>
 					<Grid>
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition SharedSizeGroup="HalfWidth"></ColumnDefinition>
+							<ColumnDefinition SharedSizeGroup="HalfWidthButtons"></ColumnDefinition>
 						</Grid.ColumnDefinitions>
-						<Button x:Name="newGameButton" Style="{StaticResource RegularButton}" Content="new-game" ui:UITranslator.ContentTranslationKey="new-game" Click="OnNewGameButtonClicked"/>
-					</Grid>
-				</StackPanel>
-			</Grid>
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition SharedSizeGroup="FullWidth"></ColumnDefinition>
-				</Grid.ColumnDefinitions>
-				<StackPanel Orientation="Horizontal">
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition SharedSizeGroup="HalfWidth"/>
-						</Grid.ColumnDefinitions>
-						<Button x:Name="settingsButton" Style="{StaticResource RegularButton}" Content="settings" ui:UITranslator.ContentTranslationKey="settings" Click="OnSettingsButtonClicked"/>
+						<Button x:Name="deleteGameButton" Style="{StaticResource RegularButton}" Content="delete-game" ui:UITranslator.ContentTranslationKey="delete-game" Click="OnDeleteGameButtonClicked"/>
 					</Grid>
 					<Grid>
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition SharedSizeGroup="HalfWidth"/>
+							<ColumnDefinition SharedSizeGroup="HalfWidthButtons"></ColumnDefinition>
 						</Grid.ColumnDefinitions>
-						<Button x:Name="exitButton" Style="{StaticResource RegularButton}" Content="exit" ui:UITranslator.ContentTranslationKey="exit" Click="OnExitButtonClicked"/>
+						<Button x:Name="playGameButton" Style="{StaticResource RegularButton}" Content="play-game" ui:UITranslator.ContentTranslationKey="play-game" Click="OnPlayGameButtonClicked"/>
 					</Grid>
 				</StackPanel>
 			</Grid>
