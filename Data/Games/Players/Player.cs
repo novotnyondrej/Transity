@@ -13,17 +13,20 @@ namespace Transity.Data.Games.Players
 	{
 		//Nazev souboru s informacemi o hracovi
 		public static readonly string SaveFileName = "player";
+		//Vychozi pocet penez
+		private static readonly int InitialMoney = 10000;
 
 		//Pocet penez
 		[JsonProperty("money")]
 		public readonly int Money;
 
 		//Konstruktor
+		[JsonConstructor]
 		public Player(
 			int? money = null
 		)
 		{
-			Money = money ?? 1000;
+			Money = money ?? InitialMoney;
 		}
 		//Ulozi hrace
 		public void Save(GameInformation gameInformation)

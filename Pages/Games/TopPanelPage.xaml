@@ -1,0 +1,23 @@
+﻿<Page x:Class="Transity.Pages.Games.TopPanelPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Transity.Pages.Games"
+	  xmlns:ui="clr-namespace:Transity.UI"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="TopPanel">
+    <Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"></ColumnDefinition>
+			<ColumnDefinition Width="*"></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<StackPanel>
+		    <Label x:Name="playerBalanceLabel" Content="balance" Style="{StaticResource RegularLabel}"></Label>
+		</StackPanel>
+		<StackPanel Grid.Column="1" HorizontalAlignment="Right">
+			<Button x:Name="pauseGameButton" Content="pause-game" ui:UITranslator.ContentTranslationKey="pause-game" Style="{StaticResource RegularButton}"></Button>
+		</StackPanel>
+	</Grid>
+</Page>

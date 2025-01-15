@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace Transity.UI
 {
-	public abstract class TranslatablePage<ParentWindowType> : Page where ParentWindowType : Window
+	public abstract class TranslatablePage<ParentWindowType> : Page
 	{
 		//Rodicovske okno
 		public readonly ParentWindowType ParentWindow;

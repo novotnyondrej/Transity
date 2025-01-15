@@ -8,6 +8,6 @@
         Title="MainWindow" Height="450" Width="800"
 		WindowState="Maximized">
 	<Grid>
-		<Frame x:Name="MainFrame" Content="Frame" NavigationUIVisibility="Hidden"/>
+		<Frame x:Name="mainFrame" Content="Frame" NavigationUIVisibility="Hidden"/>
 	</Grid>
 </Window>

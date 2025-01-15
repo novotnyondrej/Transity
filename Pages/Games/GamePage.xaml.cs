@@ -12,9 +12,21 @@ namespace Transity.Pages.Games
 	{
 		//Jiz existujici instance
 		private static readonly Dictionary<MainWindow, GamePage> Instances = [];
+		
 		//Nactena hra
 		internal Game? CurrentGame { get; private set; }
+		//Index prave oznaceneho mesta
+		internal int? SelectedCityIndex { get; private set; }
+		//Aktualne oznacene mesto
+		internal City? SelectedCity { get => (CurrentGame is null || SelectedCityIndex is null ? null : CurrentGame.Cities.ElementAt((int)SelectedCityIndex)); }
 
+		//Event na zmenu hry
+		internal delegate void OnGameChangedDelegate(Game game);
+		internal event OnGameChangedDelegate OnGameChanged = delegate { };
+		//Event na zmenu oznaceneho mesta
+		internal delegate void OnSelectedCityChangedDelegate(City? previousCity, City? currentCity);
+		internal event OnSelectedCityChangedDelegate OnSelectedCityChanged = delegate { };
+		
 		public GamePage(MainWindow parentWindow) : base(parentWindow)
 		{
 			//Kontrola, jestli uz neexistuje
@@ -23,6 +35,8 @@ namespace Transity.Pages.Games
 			Instances[parentWindow] = this;
 			//Inicializace
 			InitializeComponent();
+			//Vytvoreni stranek
+			mainContentFrame.Navigate(new MainPanelPage(this));
 		}
 		//Ziska instanci stranky
 		public static GamePage GetInstance(MainWindow parentWindow)
@@ -41,7 +55,17 @@ namespace Transity.Pages.Games
 		internal void LoadGame(Game game)
 		{
 			CurrentGame = game;
+			SelectedCityIndex = null;
+			OnGameChanged.Invoke(game);
 			ParentWindow.ChangePage(this);
+		}
+		//Zmeni index oznaceneho mesta
+		internal void ChangeSelectedCityIndex(int? cityIndex)
+		{
+			//Momentalne oznacene mesto
+			City? currentCity = SelectedCity;
+			SelectedCityIndex = cityIndex;
+			OnSelectedCityChanged.Invoke(currentCity, SelectedCity);
 		}
 		//Stranka nactena
 		public void OnLoadEvent(object sender, RoutedEventArgs e)

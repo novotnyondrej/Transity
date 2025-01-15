@@ -79,5 +79,14 @@ namespace Transity.UI
 			}
 			return null;
 		}
+		//Vyhleda element podle nazvu
+		public static T? FindChildByName<T>(this Grid grid, string name) where T : FrameworkElement
+		{
+			foreach (T item in grid.Children.OfType<T>())
+			{
+				if (item.Name == name) return item;
+			}
+			return null;
+		}
 	}
 }

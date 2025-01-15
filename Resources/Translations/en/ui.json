@@ -32,5 +32,6 @@
 	"no-game-to-delete" : "No game to delete",
 	"delete-game-description" : "Are you sure want to delete game \"{game-name}\"?",
 	"cancel-delete-game" : "Cancel",
-	"never-played" : "Never"
+	"never-played" : "Never",
+	"pause-game" : "Pause"
 }

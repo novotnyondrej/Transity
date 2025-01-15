@@ -10,6 +10,21 @@
       Title="Game"
 	  Loaded="OnLoadEvent">
     <Grid>
-        
+		<!--<Frame x:Name="overlayFrame" Content="overlay-frame" NavigationUIVisibility="Hidden" Panel.ZIndex="5"></Frame>-->
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" MinHeight="30px"></RowDefinition>
+				<RowDefinition Height="*"></RowDefinition>
+			</Grid.RowDefinitions>
+			<Frame x:Name="topPanelFrame" Content="top-panel-frame" NavigationUIVisibility="Hidden"/>
+			<Grid Grid.Row="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"></ColumnDefinition>
+					<ColumnDefinition Width="Auto" MinWidth="100px"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+				<Frame x:Name="mainContentFrame" Content="main-content-frame" NavigationUIVisibility="Hidden"></Frame>
+				<Frame Grid.Column="1" x:Name="sidePanelFrame" Content="side-panel-frame" NavigationUIVisibility="Hidden"></Frame>
+			</Grid>
+		</Grid>
     </Grid>
 </ui:MainWindowPage>

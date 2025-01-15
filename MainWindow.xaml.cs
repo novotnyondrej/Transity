@@ -40,7 +40,7 @@ namespace Transity
 		//Zmeni stranku
 		public void ChangePage(TranslatablePage<MainWindow> page)
 		{
-			MainFrame.Navigate(page);
+			mainFrame.Navigate(page);
 		}
 
 		//Event listener na zmenu strategie nacitani stranek
