@@ -9,7 +9,7 @@ namespace Transity.Pages
 	/// <summary>
 	/// Interaction logic for MainMenuPage.xaml
 	/// </summary>
-	public partial class MainMenuPage : MainWindowPage
+	public partial class MainMenuPage : MainWindowChild
 	{
 		//Jiz existujici instance
 		private static Dictionary<MainWindow, MainMenuPage> Instances = new();

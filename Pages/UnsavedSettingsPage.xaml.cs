@@ -7,7 +7,7 @@ namespace Transity.Pages
 	/// <summary>
 	/// Interaction logic for UnsavedSettingsPage.xaml
 	/// </summary>
-	public partial class UnsavedSettingsPage : MainWindowPage
+	public partial class UnsavedSettingsPage : MainWindowChild
 	{
 		private static Dictionary<MainWindow, UnsavedSettingsPage> Instances = new();
 

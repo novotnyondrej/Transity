@@ -18,7 +18,11 @@ namespace Transity.Data.Games.Players
 
 		//Pocet penez
 		[JsonProperty("money")]
-		public readonly int Money;
+		public int Money { get; private set; }
+
+		//Event na zmenu poctu penez
+		internal delegate void OnMoneyChangedDelegate(int previousValue, int currentValue);
+		internal event OnMoneyChangedDelegate OnMoneyChanged = delegate { };
 
 		//Konstruktor
 		[JsonConstructor]
@@ -27,6 +31,16 @@ namespace Transity.Data.Games.Players
 		)
 		{
 			Money = money ?? InitialMoney;
+		}
+		//Zmeni penize o nejakou castku
+		public bool ChangeMoney(int change)
+		{
+			if (Money + change < 0) return false;
+
+			int previousValue = Money;
+			Money += change;
+			OnMoneyChanged(previousValue, Money);
+			return true;
 		}
 		//Ulozi hrace
 		public void Save(GameInformation gameInformation)

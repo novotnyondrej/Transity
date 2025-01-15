@@ -1,0 +1,19 @@
+﻿<ui:SidePanelPageChild x:Class="Transity.Pages.Games.CityDetailPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Transity.Pages.Games"
+	  xmlns:ui="clr-namespace:Transity.UI"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="CityDetailPage"
+	  Loaded="OnLoadEvent">
+    <Grid>
+		<StackPanel>
+			<Label Content="city-detail-title" ui:UITranslator.ContentTranslationKey="city-detail-title" Style="{StaticResource Title}" HorizontalAlignment="Center"></Label>
+			<Label x:Name="cityNameLabel" Content="city-name" Style="{StaticResource RegularLabel}" HorizontalAlignment="Center"></Label>
+			<Button x:Name="buyCityButton" Content="buy-city" Style="{StaticResource RegularButton}" HorizontalAlignment="Center" Click="OnBuyButtonClicked"></Button>
+		</StackPanel>
+    </Grid>
+</ui:SidePanelPageChild>

@@ -33,5 +33,7 @@
 	"delete-game-description" : "Are you sure want to delete game \"{game-name}\"?",
 	"cancel-delete-game" : "Cancel",
 	"never-played" : "Never",
-	"pause-game" : "Pause"
+	"pause-game" : "Pause",
+	"city-detail-title" : "City detail",
+	"buy-city" : "Buy for ${city-price}"
 }

@@ -19,15 +19,15 @@ using Transity.UI;
 namespace Transity.Pages.Games
 {
 	/// <summary>
-	/// Interaction logic for TopPanelPage.xaml
+	/// Interaction logic for SidePanelPage.xaml
 	/// </summary>
-	public partial class TopPanelPage : GamePageChild
+	public partial class SidePanelPage : GamePageChild
 	{
 		//Jiz existujici instance
-		private static readonly Dictionary<GamePage, TopPanelPage> Instances = [];
+		private static readonly Dictionary<GamePage, SidePanelPage> Instances = [];
 
 
-		public TopPanelPage(GamePage parentPage) : base(parentPage)
+		public SidePanelPage(GamePage parentPage) : base(parentPage)
 		{
 			//Kontrola, jestli uz neexistuje
 			if (Instances.ContainsKey(parentPage)) throw new DetailedTranslatableException(new("page-already-exists", "exceptions"));
@@ -36,14 +36,15 @@ namespace Transity.Pages.Games
 
 			InitializeComponent();
 			parentPage.OnGameChanged += OnGameChanged;
+			parentPage.OnSelectedCityChanged += OnSelectedCityChanged;
 		}
 		//Ziska instanci stranky
-		public static TopPanelPage GetInstance(GamePage parentPage)
+		public static SidePanelPage GetInstance(GamePage parentPage)
 		{
 			if (Instances.ContainsKey(parentPage))
 			{
 				//Instance jiz existuje, pouze ji ziskame, prelozime a vratime
-				TopPanelPage instance = Instances[parentPage];
+				SidePanelPage instance = Instances[parentPage];
 				instance.Preload();
 				return instance;
 			}
@@ -58,17 +59,22 @@ namespace Transity.Pages.Games
 		}
 		private void OnGameChanged(Game? previousGame, Game? currentGame)
 		{
-			//Odebrani eventu na zmenu penez z predchozi hry
-			if (previousGame is not null) previousGame.Player.OnMoneyChanged -= UpdatePlayerBalance;
-			//Pridani eventu na zmenu penez
-			if (currentGame is not null) currentGame.Player.OnMoneyChanged += UpdatePlayerBalance;
-			
-			UpdatePlayerBalance(0, currentGame?.Player.Money ?? 0);
+			contentFrame.Navigate(null);
 		}
-		//Aktualizuje hracovy penize
-		private void UpdatePlayerBalance(int previousBalance, int currentBalance)
+		private void OnSelectedCityChanged(City? previousCity, City? currentCity)
 		{
-			playerBalanceLabel.Content = "$" + currentBalance;
+			if (currentCity is not null)
+			{
+				//Ziskani stranky
+				CityDetailPage page = CityDetailPage.GetInstance(this);
+				//Nacteni informaci o meste
+				page.LoadCityDetail(currentCity);
+				contentFrame.Navigate(page);
+			}
+			else
+			{
+				contentFrame.Navigate(null);
+			}
 		}
 	}
 }

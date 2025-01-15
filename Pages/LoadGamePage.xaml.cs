@@ -18,7 +18,7 @@ namespace Transity.Pages
 	/// <summary>
 	/// Interaction logic for LoadGamePage.xaml
 	/// </summary>
-	public partial class LoadGamePage : MainWindowPage
+	public partial class LoadGamePage : MainWindowChild
 	{
 		//Jiz existujici instance
 		private static Dictionary<MainWindow, LoadGamePage> Instances = new();

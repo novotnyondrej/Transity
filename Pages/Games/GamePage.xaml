@@ -1,4 +1,4 @@
-﻿<ui:MainWindowPage x:Class="Transity.Pages.Games.GamePage"
+﻿<ui:MainWindowChild x:Class="Transity.Pages.Games.GamePage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -20,11 +20,11 @@
 			<Grid Grid.Row="1">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*"></ColumnDefinition>
-					<ColumnDefinition Width="Auto" MinWidth="100px"></ColumnDefinition>
+					<ColumnDefinition Width="Auto" MinWidth="250px"></ColumnDefinition>
 				</Grid.ColumnDefinitions>
 				<Frame x:Name="mainContentFrame" Content="main-content-frame" NavigationUIVisibility="Hidden"></Frame>
 				<Frame Grid.Column="1" x:Name="sidePanelFrame" Content="side-panel-frame" NavigationUIVisibility="Hidden"></Frame>
 			</Grid>
 		</Grid>
     </Grid>
-</ui:MainWindowPage>
+</ui:MainWindowChild>

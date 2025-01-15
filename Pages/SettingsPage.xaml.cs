@@ -22,7 +22,7 @@ namespace Transity.Pages
 	/// <summary>
 	/// Interaction logic for SettingsPage.xaml
 	/// </summary>
-	public partial class SettingsPage : MainWindowPage
+	public partial class SettingsPage : MainWindowChild
 	{
 		//Jiz existujici instance
 		private static Dictionary<MainWindow, SettingsPage> Instances = new();

@@ -10,6 +10,8 @@ namespace Transity.Data.Games
 {
 	internal class City
 	{
+		//Hra, kteremu mesto patri
+		private Game ParentGame;
 		//Index mesta
 		public readonly int Index;
 		//Souradnice mesta
@@ -22,21 +24,34 @@ namespace Transity.Data.Games
 		private static readonly int MaximumCityDistance = 48;
 		//Detailnost umisteni mest na mape
 		private static readonly int PlacementDetail = 8;
-
+		//Cena koupeni noveho mesta
+		public static readonly int NewCityPrice = 1000;
 
 		private City(
+			Game parentGame,
 			int index,
 			Coordinate location,
 			CityStatus? status = null
 		)
 		{
+			ParentGame = parentGame;
 			Index = index;
 			Location = location;
 			Status = status ?? new();
 		}
-		//Vygeneruje mesta
-		public static IEnumerable<City> GenerateCities(GameInformation information, IEnumerable<CityStatus>? cityStatuses = null)
+		//Hrac chce koupit mesto
+		public bool Buy()
 		{
+			if (Status.Bought) return false;
+			if (!ParentGame.Player.ChangeMoney(-NewCityPrice)) return false;
+			//Zmena statusu
+			Status.Buy(this);
+			return true;
+		}
+		//Vygeneruje mesta
+		public static IEnumerable<City> GenerateCities(Game game, IEnumerable<CityStatus>? cityStatuses = null)
+		{
+			GameInformation information = game.Information;
 			int width = (int)information.MapWidth;
 			int height = (int)information.MapHeight;
 			int halfWidth = width / 2;
@@ -78,7 +93,7 @@ namespace Transity.Data.Games
 			List<City> cities = [];
 			for (int cityNum = 0; cityNum < cityCoordinates.Count(); cityNum++)
 			{
-				cities.Add(new(cityNum, cityCoordinates.ElementAt(cityNum), cityStatuses.ElementAtOrDefault(cityNum)));
+				cities.Add(new(game, cityNum, cityCoordinates.ElementAt(cityNum), cityStatuses.ElementAtOrDefault(cityNum)));
 			}
 			return cities;
 		}

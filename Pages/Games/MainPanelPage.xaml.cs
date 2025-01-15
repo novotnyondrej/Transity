@@ -21,7 +21,7 @@ namespace Transity.Pages.Games
 	/// <summary>
 	/// Interaction logic for MainPanelPage.xaml
 	/// </summary>
-	public partial class MainPanelPage : GamePagePage
+	public partial class MainPanelPage : GamePageChild
 	{
 		//Jiz existujici instance
 		private static readonly Dictionary<GamePage, MainPanelPage> Instances = [];
@@ -59,22 +59,33 @@ namespace Transity.Pages.Games
 			//Nacteni prekladu
 			Preload();
 		}
-		private void OnGameChanged(Game game)
+		private void OnGameChanged(Game? previousGame, Game? currentGame)
 		{
+			if (previousGame is not null)
+			{
+				foreach (City city in previousGame.Cities)
+				{
+					city.Status.OnStatusChanged -= OnCityStatusChanged;
+				}
+			}
+			//Smazani elementu na mape
+			mapElement.Children.Clear();
+
+			if (currentGame is null) return;
+
 			//Ziskani maximalnich rozmeru mapy
-			int width = (int)game.Information.MapWidth;
-			int height = (int)game.Information.MapHeight;
+			int width = (int)currentGame.Information.MapWidth;
+			int height = (int)currentGame.Information.MapHeight;
 			//Ziskani extremni hodnoty
 			int size = (width > height ? width : height);
 			//Nasobek odstupu mest
 			double multiplier = size / 32;
-			//Smazani elementu na mape
-			mapElement.Children.Clear();
 			//Ziskani mest
-			IEnumerable<City> cities = game.Cities;
+			IEnumerable<City> cities = currentGame.Cities;
 			//Vytvoreni mest a umisteni na mapu
 			foreach (City city in cities)
 			{
+				city.Status.OnStatusChanged += OnCityStatusChanged;
 				//Souradnice
 				int x = city.Location.X;
 				int y = city.Location.Y;
@@ -109,6 +120,11 @@ namespace Transity.Pages.Games
 				if (ParentWindow.SelectedCityIndex == city.Index) cityElement.Style = FindResource("SelectedCity") as Style;
 				else cityElement.Style = FindResource("City") as Style;
 			}
+		}
+		//Reaguje na zmenu statusu mesta
+		private void OnCityStatusChanged(City city)
+		{
+			UpdateCityElementColor(city);
 		}
 		private void OnCityElementClicked(object sender, RoutedEventArgs e)
 		{

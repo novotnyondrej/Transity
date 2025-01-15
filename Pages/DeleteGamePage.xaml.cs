@@ -11,7 +11,7 @@ namespace Transity.Pages
 	/// <summary>
 	/// Interaction logic for DeleteGamePage.xaml
 	/// </summary>
-	public partial class DeleteGamePage : MainWindowPage
+	public partial class DeleteGamePage : MainWindowChild
 	{
 		//Jiz existujici instance
 		private static Dictionary<MainWindow, DeleteGamePage> Instances = new();

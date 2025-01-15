@@ -8,8 +8,6 @@ namespace Transity.Data.Games
 	{
 		//Nazev souboru se stavy mest
 		public static readonly string CityStatusesSaveFileName = "cities";
-		//Cena koupeni mesta
-		public readonly int NewCityPrice = 1000;
 
 		//Informace o hre
 		public readonly GameInformation Information;
@@ -30,7 +28,7 @@ namespace Transity.Data.Games
 			Information = information;
 			Player = player ?? new();
 			//Generace mest
-			Cities = City.GenerateCities(information, cityStatuses);
+			Cities = City.GenerateCities(this, cityStatuses);
 		}
 		//Ulozi hru
 		public void Save(bool updatePlayTime = true)
