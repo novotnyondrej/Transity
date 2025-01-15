@@ -35,5 +35,6 @@
 	"never-played" : "Never",
 	"pause-game" : "Pause",
 	"city-detail-title" : "City detail",
-	"buy-city" : "Buy for ${city-price}"
+	"buy-city" : "Buy for ${city-price}",
+	"create-new-line" : "Create new line"
 }

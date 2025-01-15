@@ -66,11 +66,14 @@ namespace Transity.Data.Games
 			Player player = AppDataManager.LoadData<Player>(GamesLocation + codeName, Player.SaveFileName, new());
 			//Nacteni stavu mest
 			IEnumerable<CityStatus>? cityStatuses = AppDataManager.LoadData<IEnumerable<CityStatus>?>(GamesLocation + codeName, Game.CityStatusesSaveFileName, null);
+			//Nacteni linek
+			IEnumerable<Line>? lines = AppDataManager.LoadData<IEnumerable<Line>?>(GamesLocation + codeName, Game.LinesSaveFileName, null);
 			//Vytvoreni hry
 			Game game = new(
 				information,
 				player,
-				cityStatuses
+				cityStatuses,
+				lines
 			);
 			return game;
 		}

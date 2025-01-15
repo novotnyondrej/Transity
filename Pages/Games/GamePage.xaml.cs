@@ -19,6 +19,10 @@ namespace Transity.Pages.Games
 		internal int? SelectedCityIndex { get; private set; }
 		//Aktualne oznacene mesto
 		internal City? SelectedCity { get => (CurrentGame is null || SelectedCityIndex is null ? null : CurrentGame.Cities.ElementAt((int)SelectedCityIndex)); }
+		//Zda aktualne vytvari linku
+		internal bool CreatingLine { get; private set; }
+		//Index mesta, odkud ma linka vest
+		private int? LineCityIndexFrom { get; set; }
 
 		//Event na zmenu hry
 		internal delegate void OnGameChangedDelegate(Game? previousGame, Game? currentGame);
@@ -26,7 +30,10 @@ namespace Transity.Pages.Games
 		//Event na zmenu oznaceneho mesta
 		internal delegate void OnSelectedCityChangedDelegate(City? previousCity, City? currentCity);
 		internal event OnSelectedCityChangedDelegate OnSelectedCityChanged = delegate { };
-		
+		//Event na vytvareni linky
+		internal delegate void OnCreatingLineStatusChangedDelegate(bool status);
+		internal event OnCreatingLineStatusChangedDelegate OnCreatingLineStatusChanged = delegate { };
+
 		public GamePage(MainWindow parentWindow) : base(parentWindow)
 		{
 			//Kontrola, jestli uz neexistuje
@@ -59,6 +66,7 @@ namespace Transity.Pages.Games
 			Game? previousGame = CurrentGame;
 			CurrentGame = game;
 			SelectedCityIndex = null;
+			CreatingLine = false;
 			OnGameChanged.Invoke(previousGame, CurrentGame);
 			ParentWindow.ChangePage(this);
 		}
@@ -67,8 +75,38 @@ namespace Transity.Pages.Games
 		{
 			//Momentalne oznacene mesto
 			City? currentCity = SelectedCity;
+			City? newCity = (CurrentGame is null || cityIndex is null ? null : CurrentGame.Cities.ElementAt((int)cityIndex));
+
+			if (CreatingLine)
+			{
+				if (newCity is null || !newCity.Status.Bought)
+				{
+					ChangeCreatingLineStatus(false);
+					cityIndex = null;
+				}
+				else if(LineCityIndexFrom is null)
+				{
+					LineCityIndexFrom = cityIndex;
+				}
+				else if (CurrentGame is not null)
+				{
+					CurrentGame.AddLine(LineCityIndexFrom ?? -1, cityIndex ?? -1);
+					SelectedCityIndex = null;
+					ChangeCreatingLineStatus(false);
+				}
+			}
 			SelectedCityIndex = cityIndex;
 			OnSelectedCityChanged.Invoke(currentCity, SelectedCity);
+		}
+		//Zmeni status vytvareni linky
+		internal void ChangeCreatingLineStatus(bool status)
+		{
+			if (status == CreatingLine) return;
+			if (status) ChangeSelectedCityIndex(null);
+
+			CreatingLine = status;
+			LineCityIndexFrom = null;
+			OnCreatingLineStatusChanged.Invoke(status);
 		}
 		//Stranka nactena
 		public void OnLoadEvent(object sender, RoutedEventArgs e)

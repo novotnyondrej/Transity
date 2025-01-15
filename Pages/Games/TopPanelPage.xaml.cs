@@ -36,6 +36,7 @@ namespace Transity.Pages.Games
 
 			InitializeComponent();
 			parentPage.OnGameChanged += OnGameChanged;
+			parentPage.OnCreatingLineStatusChanged += OnCreatingLineStatusChanged;
 		}
 		//Ziska instanci stranky
 		public static TopPanelPage GetInstance(GamePage parentPage)
@@ -64,11 +65,20 @@ namespace Transity.Pages.Games
 			if (currentGame is not null) currentGame.Player.OnMoneyChanged += UpdatePlayerBalance;
 			
 			UpdatePlayerBalance(0, currentGame?.Player.Money ?? 0);
+			createNewLineCheckbox.IsChecked = false;
 		}
 		//Aktualizuje hracovy penize
 		private void UpdatePlayerBalance(int previousBalance, int currentBalance)
 		{
 			playerBalanceLabel.Content = "$" + currentBalance;
+		}
+		public void OnCreateNewLineCheckboxClicked(object sender, RoutedEventArgs e)
+		{
+			ParentWindow.ChangeCreatingLineStatus(createNewLineCheckbox.IsChecked ?? false);
+		}
+		private void OnCreatingLineStatusChanged(bool status)
+		{
+			createNewLineCheckbox.IsChecked = status;
 		}
 	}
 }
