@@ -1,6 +1,4 @@
-﻿using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows;
+﻿using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Transity.External;
 using Transity.General;
@@ -39,15 +37,26 @@ namespace Transity.Data.Games
 			string codeName,
 			int seed,
 			MapSize mapWidth,
-			MapSize mapHeight
+			MapSize mapHeight,
+			int createdOn,
+			int lastPlayedOn
 		)
 		{
+			ForceValidMapWidth(name, mapWidth);
+			ForceValidMapHeight(name, mapHeight);
+			//Kontrola, jestli je kodovy nazev platny, pokud neni tak budeme nuceni vytvorit novy
+			if (codeName != ToCodeName(codeName)) codeName = GetAvailableCodeName(name);
+			//Kontrola casu
+			TimeConverter.ForceValidTime(createdOn);
+			TimeConverter.ForceValidTime(lastPlayedOn);
+
 			Name = name;
 			CodeName = codeName;
 			Seed = seed;
 			MapWidth = mapWidth;
 			MapHeight = mapHeight;
-			CreatedOn = LastPlayedOn = TimeConverter.GetTime();
+			CreatedOn = createdOn;
+			LastPlayedOn = lastPlayedOn;
 		}
 		public GameInformation(
 			string name,
@@ -56,6 +65,9 @@ namespace Transity.Data.Games
 			MapSize mapHeight
 		)
 		{
+			ForceValidMapWidth(name, mapWidth);
+			ForceValidMapHeight(name, mapHeight);
+
 			Name = name;
 			CodeName = GetAvailableCodeName(name);
 			Seed = TranslateSeed(seed);
@@ -63,6 +75,17 @@ namespace Transity.Data.Games
 			MapHeight = mapHeight;
 			CreatedOn = LastPlayedOn = TimeConverter.GetTime();
 		}
+		//Vyhodi hlasku pokud je neznama sirka mapy
+		private void ForceValidMapWidth(string gameName, MapSize width)
+		{
+			if (width == MapSize.Unknown) throw new TranslatableException(new("unkown-map-width", "exceptions", new() { { "game-name", gameName } }));
+		}
+		//Vyhodi hlasku pokud je neznama vyska mapy
+		private void ForceValidMapHeight(string gameName, MapSize height)
+		{
+			if (height == MapSize.Unknown) throw new TranslatableException(new("unkown-map-height", "exceptions", new() { { "game-name", gameName } }));
+		}
+
 		//Prevede seed ze stringu na integer
 		private int TranslateSeed(string? seed)
 		{
@@ -74,8 +97,8 @@ namespace Transity.Data.Games
 			//Hash
 			return seed.GetHashCode();
 		}
-		//Nalezne vhodne kodove jmeno pro hru
-		private string GetAvailableCodeName(string name)
+		//Prevede nazev na platny kodovy nazev
+		private string ToCodeName(string name)
 		{
 			string codeName = name.Trim();
 			//Nahrazeni pripadneho podtrzitka pomlckou
@@ -86,7 +109,18 @@ namespace Transity.Data.Games
 			codeName = Regex.Match(codeName, @"[a-z0-9-]{1,64}").Value;
 			//Odebrani opakujicich se polmcek
 			codeName = Regex.Replace(codeName, @"(-+)", "-");
+			//Jmeno nesmi zacinat nebo koncit na pomlcku
+			if (codeName.StartsWith('-')) codeName = codeName.Substring(1);
+			if (codeName.EndsWith('-')) codeName = codeName.Substring(0, codeName.Length - 1);
 
+			//Kontrola delky jmena
+			if (codeName.Length < 3) codeName = "new-game";
+			return codeName;
+		}
+		//Nalezne vhodne kodove jmeno pro hru
+		private string GetAvailableCodeName(string name)
+		{
+			string codeName = ToCodeName(name);
 			//Kontrola dostupnosti jmena
 			int index = 0;
 			bool available;
@@ -99,7 +133,7 @@ namespace Transity.Data.Games
 			}
 			while (!available && index < 100);
 			//Kontrola uspesnosti
-			if (!available) throw new DetailedTranslatableException(new("game-name-not-available", "exceptions", new() { { "game-name", name } }));
+			if (!available) throw new TranslatableException(new("game-name-not-available", "exceptions", new() { { "game-name", name } }));
 			//Vysledny kodovy nazev
 			return proposedCodeName;
 		}

@@ -2,6 +2,7 @@
 using Transity.General.Exceptions;
 using Transity.Data.Games.Players;
 using System.Windows;
+using Transity.General;
 
 namespace Transity.Data.Games
 {
@@ -26,17 +27,18 @@ namespace Transity.Data.Games
 			IEnumerable<string> availableGameFolders;
 
 			if (DirectoryManager.Exists(AppDataManager.DataLocation + GamesLocation)) availableGameFolders = DirectoryManager.GetDirectories(AppDataManager.DataLocation + GamesLocation);
-			else availableGameFolders = Enumerable.Empty<string>();
+			else availableGameFolders = [];
 
 			//Ziskani nazvu her
 			IEnumerable<string> gameCodeNames = availableGameFolders.Select(DirectoryManager.GetDirectoryName);
-			
+
 			//Pokus o nacteni informaci o hrach
-			Dictionary<string, GameInformation> informations = gameCodeNames.Select(
+			IEnumerable<GameInformation> informationList = gameCodeNames.Select(
 				(codeName) => AppDataManager.LoadData<GameInformation?>(GamesLocation + codeName, GameInformation.SaveFileName, null)
 			).Where(
 				(information) => information is not null
-			).ToDictionary(
+			);
+			Dictionary<string, GameInformation> informations = informationList.ToDictionary(
 				(information) => information.CodeName,
 				(information) => information
 			);
@@ -73,7 +75,7 @@ namespace Transity.Data.Games
 		public static void SaveGame(Game game)
 		{
 			//Ulozeni hry
-			game.Save();
+			SafeExecutor.Execute(game.Save);
 			//Aktualizace seznamu dostupnych her
 			LoadAvailableGames();
 		}

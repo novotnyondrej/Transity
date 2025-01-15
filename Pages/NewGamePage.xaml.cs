@@ -1,6 +1,9 @@
 ﻿using System.Windows;
 using Transity.UI;
 using Transity.General.Exceptions;
+using Transity.General;
+using Transity.Data.Games;
+using System.Windows.Controls;
 
 namespace Transity.Pages
 {
@@ -44,6 +47,13 @@ namespace Transity.Pages
 			gameSeedTextbox.Text = "";
 			mapWidthComboBox.SelectedIndex = 1;
 			mapHeightComboBox.SelectedIndex = 1;
+			createGameButton.IsEnabled = false;
+		}
+		//Zmena textu v policku pro nazev hry
+		public void OnGameNameChanged(object sender, RoutedEventArgs e)
+		{
+			//Tlacitko vytvorit hru je mozne zakliknout pouze pokud je vyplnen nazev hry
+			createGameButton.IsEnabled = gameNameTextbox.Text.Trim().Length >= 3;
 		}
 		//Stranka nactena
 		public void OnLoadEvent(object sender, RoutedEventArgs e)
@@ -55,6 +65,40 @@ namespace Transity.Pages
 		public void OnCancelButtonClicked(object sender, RoutedEventArgs e)
 		{
 			ParentWindow.ChangePage(MainMenuPage.GetInstance(ParentWindow));
+		}
+		//Vytvori novou hru
+		private Game CreateNewGame()
+		{
+			//Ziskani zvolene velikosti mapy
+			string widthName = ((ComboBoxItem)mapWidthComboBox.SelectedItem).Tag.ToString() ?? "";
+			string heightName = ((ComboBoxItem)mapHeightComboBox.SelectedItem).Tag.ToString() ?? "";
+			//Prevod na enum
+			if (!MapSize.TryParse(widthName, out MapSize width)) throw new DetailedTranslatableException(new("invalid-map-width", "exceptions", new() { { "map-width", widthName } }));
+			if (!MapSize.TryParse(heightName, out MapSize height)) throw new DetailedTranslatableException(new("invalid-map-height", "exceptions", new() { { "map-height", heightName } }));
+			//Vytvoreni nove hry
+			return new Game(
+				new(
+					gameNameTextbox.Text,
+					gameSeedTextbox.Text,
+					width,
+					height
+				)
+			);
+		}
+		//Uzivatel klikl na tlacitko vytvorit hru
+		public void OnCreateGameButtonClicked(object sender, RoutedEventArgs e)
+		{
+			//Vytvoreni nove hry
+			Game? newGame = SafeExecutor.Execute(CreateNewGame, null);
+			//Kontrola vysledku
+			if (newGame is null)
+			{
+				//Nepovedlo se zalozit novou hru, probehla zpetna vazba
+				return;
+			}
+			//Ulozeni nove hry
+			GamesManager.SaveGame(newGame);
+			//Spusteni samotne hry
 		}
 	}
 }

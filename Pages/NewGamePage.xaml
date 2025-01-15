@@ -38,7 +38,7 @@
 						<Label Grid.Column="0" Style="{StaticResource RegularLabel}" Content="game-name" ui:UITranslator.ContentTranslationKey="game-name"></Label>
 					</Grid>
 					<Grid Grid.Column="1" Style="{StaticResource InputWrapper}">
-						<TextBox x:Name="gameNameTextbox" Grid.Column="1" Style="{StaticResource RegularTextbox}" TextWrapping="Wrap" Text="" MaxLength="64"></TextBox>
+						<TextBox x:Name="gameNameTextbox" Grid.Column="1" Style="{StaticResource RegularTextbox}" TextWrapping="Wrap" Text="" MaxLength="64" TextChanged="OnGameNameChanged"></TextBox>
 					</Grid>
 				</Grid>
 			</Grid>
@@ -106,7 +106,7 @@
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition SharedSizeGroup="HalfWidthButtons"></ColumnDefinition>
 						</Grid.ColumnDefinitions>
-						<Button x:Name="createGameButton" Style="{StaticResource RegularButton}" Content="create-game" ui:UITranslator.ContentTranslationKey="create-game"/>
+						<Button x:Name="createGameButton" Style="{StaticResource RegularButton}" Content="create-game" ui:UITranslator.ContentTranslationKey="create-game" Click="OnCreateGameButtonClicked"/>
 					</Grid>
 				</StackPanel>
 			</Grid>

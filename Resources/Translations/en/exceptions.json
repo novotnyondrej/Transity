@@ -27,5 +27,10 @@
 	"page-already-exists" : "Page already exists",
 	"ui-element-not-specified" : "UI element not specified",
 	"game-not-found" : "Game \"{code-name}\" not found",
-	"game-name-not-available" : "Game name \"{game-name}\" is not available. Try using other name"
+	"game-name-not-available" : "Game name \"{game-name}\" is not available. Try using other name",
+	"invalid-map-width" : "Invalid map width \"{map-width}\"",
+	"invalid-map-height" : "Invalid map height \"{map-height}\"",
+	"unknown-map-width" : "Unknown map width for game \"{game-name}\"",
+	"unknown-map-height" : "Unknown map height for game \"{game-name}\"",
+	"invalid-time" : "Time \"{time}\" is not valid"
 }
