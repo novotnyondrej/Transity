@@ -2,6 +2,7 @@
 using Transity.UI;
 using Transity.General.Exceptions;
 using Transity.Data.Games;
+using Transity.Pages.Games;
 
 namespace Transity.Pages
 {
@@ -58,6 +59,20 @@ namespace Transity.Pages
 		{
 			//Nacteni prekladu
 			Preload();
+		}
+		//Uzivatel kliknul na tlacitko pokracovat ve hre
+		public void OnContinueButtonClicked(object sender, RoutedEventArgs e)
+		{
+			//Nalezeni posledni hrane hry
+			string gameKey = GamesManager.AvailableGames.Where(
+				(pair) => pair.Value.LastPlayedOn is not null
+			).MaxBy(
+				(pair) => pair.Value.LastPlayedOn
+			).Key;
+			//Nacteni hry
+			Game game = GamesManager.LoadGame(gameKey);
+			//Nacteni rozhrani pro hru
+			GamePage.GetInstance(ParentWindow).LoadGame(game);
 		}
 		//Uzivatel kliknul na tlacitko nacist hru
 		public void OnLoadGameButtonClicked(object sender, RoutedEventArgs e)

@@ -4,6 +4,7 @@ using Transity.General.Exceptions;
 using Transity.General;
 using Transity.Data.Games;
 using System.Windows.Controls;
+using Transity.Pages.Games;
 
 namespace Transity.Pages
 {
@@ -99,6 +100,7 @@ namespace Transity.Pages
 			//Ulozeni nove hry
 			GamesManager.SaveGame(newGame, false);
 			//Spusteni samotne hry
+			GamePage.GetInstance(ParentWindow).LoadGame(newGame);
 		}
 	}
 }

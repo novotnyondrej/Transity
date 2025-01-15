@@ -10,6 +10,7 @@ using Transity.Data;
 using Transity.Data.Games;
 using Transity.General;
 using Transity.General.Exceptions;
+using Transity.Pages.Games;
 using Transity.UI;
 
 namespace Transity.Pages
@@ -148,8 +149,15 @@ namespace Transity.Pages
 		//Uzivatel kliknul na tlacitko hrat hru
 		public void OnPlayGameButtonClicked(object sender, RoutedEventArgs e)
 		{
+			//Ziskani moznosti s danou hrou
+			ListBoxItem? selectedItem = (ListBoxItem?)gamesListBox.SelectedItem;
+			if (selectedItem is null) return;
+			//Ziskani klice hry
+			string gameKey = (string)selectedItem.Tag;
 			//Nacteni oznacene hry
-			MessageBox.Show("play");
+			Game game = GamesManager.LoadGame(gameKey);
+			//Nacteni rozhrani pro hru
+			GamePage.GetInstance(ParentWindow).LoadGame(game);
 		}
 	}
 }

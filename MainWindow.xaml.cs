@@ -16,6 +16,7 @@ using Transity.Data;
 using Transity.Pages;
 using Transity.UI;
 using Transity.Data.Games;
+using Transity.Pages.Games;
 
 namespace Transity
 {
@@ -53,6 +54,7 @@ namespace Transity
 			DeleteGamePage.GetInstance(this);
 			NewGamePage.GetInstance(this);
 			SettingsPage.GetInstance(this);
+			GamePage.GetInstance(this);
 		}
 
 	}
