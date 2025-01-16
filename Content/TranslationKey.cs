@@ -11,7 +11,6 @@
 		private Dictionary<string, TranslationKey> TranslatableVariables;
 
 
-		//Konstuktor
 		/*public TranslationKey(
 			string key,
 			string? set = null,

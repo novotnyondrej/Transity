@@ -2,7 +2,7 @@
 
 namespace Transity.General
 {
-	//Trida pro prevody casu
+	//Prevodnik casu
 	internal static class TimeConverter
 	{
 		//Vrati aktualni cas v sekundach
@@ -19,7 +19,7 @@ namespace Transity.General
 			ForceValidTime(time);
 			//Vytvoreni data
 			DateTime dateTime = new DateTime(1970, 1, 1).AddSeconds(time);
-			//
+			//Vysledek
 			return dateTime.ToShortDateString() + ' ' + dateTime.ToShortTimeString();
 		}
 		//Vynuti platny cas

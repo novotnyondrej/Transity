@@ -2,6 +2,7 @@
 
 namespace Transity.Data.Games
 {
+	//Statis mesta
 	internal class CityStatus
 	{
 		//Zda je hracem koupeno

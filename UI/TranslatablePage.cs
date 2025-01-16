@@ -1,8 +1,8 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace Transity.UI
 {
+	//Stranka, ktera muze obsahovat elementy s preklady
 	public abstract class TranslatablePage<ParentWindowType> : Page
 	{
 		//Rodicovske okno

@@ -9,7 +9,6 @@ namespace Transity.General.Exceptions
 		private readonly TranslationKey MessageKey;
 		public override string Message => Translator.LoadTranslation(MessageKey);
 
-		//Konstruktor
 		public TranslatableException(TranslationKey messageKey) : base(messageKey.Key)
 		{
 			//Nastaveni klice

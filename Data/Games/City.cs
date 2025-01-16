@@ -1,13 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Xaml.Schema;
-using System.Windows;
-
-namespace Transity.Data.Games
+﻿namespace Transity.Data.Games
 {
+	//Mesto
 	internal class City
 	{
 		//Hra, kteremu mesto patri
@@ -42,7 +35,9 @@ namespace Transity.Data.Games
 		//Hrac chce koupit mesto
 		public bool Buy()
 		{
+			//Pokud je mesto jiz koupeno, nema duvod za nej znovu platit
 			if (Status.Bought) return false;
+			//Pokus o odebrani penez
 			if (!ParentGame.Player.ChangeMoney(-NewCityPrice)) return false;
 			//Zmena statusu
 			Status.Buy(this);
@@ -51,6 +46,7 @@ namespace Transity.Data.Games
 		//Vygeneruje mesta
 		public static IEnumerable<City> GenerateCities(Game game, IEnumerable<CityStatus>? cityStatuses = null)
 		{
+			//Nacteni informaci o mape
 			GameInformation information = game.Information;
 			int width = (int)information.MapWidth;
 			int height = (int)information.MapHeight;
@@ -69,7 +65,7 @@ namespace Transity.Data.Games
 			}
 			//Kontrola, jestli vubec mame nejake souradnice
 			if (allCoordinates.Count <= 0) return [];
-			//Zvoleni nahodne pocatecni souradnice
+			//Seznam souradnic, na kterych vzniknou mesta
 			List<Coordinate> cityCoordinates = [];
 			//Souradnice, ktere je mozne vybrat
 			IEnumerable<Coordinate> availableCoordinates = allCoordinates;

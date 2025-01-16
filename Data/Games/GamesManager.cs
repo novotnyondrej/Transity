@@ -1,18 +1,16 @@
-﻿using Transity.External;
+﻿using Transity.General;
 using Transity.General.Exceptions;
-using Transity.Data.Games.Players;
-using System.Windows;
-using Transity.General;
+using Transity.External;
 
 namespace Transity.Data.Games
 {
-	//Stara se o nacitani a ukladani her a aktualizaci seznamu her
-	internal class GamesManager
+    //Stara se o nacitani a ukladani her a aktualizaci seznamu her
+    internal class GamesManager
 	{
 		//Nazev slozky s hrami
 		public static readonly string GamesLocation = "Games\\";
 		//Dostupne hry
-		private static Dictionary<string, GameInformation> _AvailableGames;
+		private static Dictionary<string, GameInformation> _AvailableGames = [];
 		public static IReadOnlyDictionary<string, GameInformation> AvailableGames => _AvailableGames;
 
 		static GamesManager()
@@ -23,9 +21,9 @@ namespace Transity.Data.Games
 		//Nacte dostupne hry
 		private static void LoadAvailableGames()
 		{
-			//Ziskani her ve slozce s hrami
+			//Slozky dostupnych her
 			IEnumerable<string> availableGameFolders;
-
+			//Ziskani her ve slozce s hrami
 			if (DirectoryManager.Exists(AppDataManager.DataLocation + GamesLocation)) availableGameFolders = DirectoryManager.GetDirectories(AppDataManager.DataLocation + GamesLocation);
 			else availableGameFolders = [];
 
@@ -44,7 +42,7 @@ namespace Transity.Data.Games
 			);
 			_AvailableGames = informations;
 		}
-		//Rozhodne, zda hra existuje nebo
+		//Rozhodne, zda hra existuje
 		public static bool GameExists(string codeName) => _AvailableGames.ContainsKey(codeName);
 		//Nacte hru
 		public static Game LoadGame(string codeName)

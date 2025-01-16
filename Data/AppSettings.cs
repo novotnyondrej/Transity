@@ -20,19 +20,19 @@ namespace Transity.Data
 
 		//Event na zmenu nastaveni
 		public delegate void OnSettingsChangedDelegate(string propertyName);
-		public event OnSettingsChangedDelegate OnSettingsChanged;
+		public event OnSettingsChangedDelegate OnSettingsChanged = delegate { };
 		//Event na zmenu ciloveho jazyka
 		public delegate void OnTargetLanguageChangedDelegate(string originalLanguage, string newLanguage);
-		public event OnTargetLanguageChangedDelegate OnTargetLanguageChanged;
+		public event OnTargetLanguageChangedDelegate OnTargetLanguageChanged = delegate { };
 		//Event na zmenu zalozniho jazyka
 		public delegate void OnBackupLanguageChangedDelegate(string originalLanguage, string newLanguage);
-		public event OnBackupLanguageChangedDelegate OnBackupLanguageChanged;
+		public event OnBackupLanguageChangedDelegate OnBackupLanguageChanged = delegate { };
 		//Event na zmenu strategie nacitani jazyku
 		public delegate void OnTranslationLoadStrategyChangedDelegate(bool newValue);
-		public event OnTranslationLoadStrategyChangedDelegate OnTranslationLoadStrategyChanged;
+		public event OnTranslationLoadStrategyChangedDelegate OnTranslationLoadStrategyChanged = delegate { };
 		//Event na zmenu strategie nacitani stranek
 		public delegate void OnPagesLoadStrategyChangedDelegate(bool newValue);
-		public event OnPagesLoadStrategyChangedDelegate OnPagesLoadStrategyChanged;
+		public event OnPagesLoadStrategyChangedDelegate OnPagesLoadStrategyChanged = delegate { };
 
 		//Jazyk zobrazeni aplikace
 		private string _TargetLanguage;

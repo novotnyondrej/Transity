@@ -1,6 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Media;
-using System.Windows.Controls;
 using System.IO;
 using System.Windows.Markup;
 using System.Xml;
@@ -8,6 +6,7 @@ using System.Xml;
 namespace Transity.UI
 {
 	//https://shrinandvyas.blogspot.com/2011/08/wpf-how-to-deep-copy-wpf-object-eg.html
+	//Klonovani elementu
 	internal static class UICloner
 	{
 		//Klonuje objekt a prideli mu jmeno

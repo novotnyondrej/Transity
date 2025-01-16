@@ -35,7 +35,6 @@ namespace Transity.General.Exceptions
 			}
 		}
 
-		//Konstruktor
 		public DetailedTranslatableException(TranslationKey messageKey) : base(messageKey)
 		{
 		}

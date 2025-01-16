@@ -1,16 +1,16 @@
-﻿using System.Windows;
-using System.Windows.Media.Media3D;
-using Transity.Data.Games.Players;
-using Transity.External;
+﻿using Transity.External;
 
 namespace Transity.Data.Games
 {
-	//Trida pro hru
-	internal class Game
+    //Hra
+    internal class Game
 	{
 		//Nazev souboru se stavy mest
 		public static readonly string CityStatusesSaveFileName = "cities";
+		//Nazev souboru s informacemi o linkach
 		public static readonly string LinesSaveFileName = "lines";
+		//Zhodnoceni linky
+		private static readonly int LinePayout = 10;
 
 		//Informace o hre
 		public readonly GameInformation Information;
@@ -48,22 +48,27 @@ namespace Transity.Data.Games
 		//Prida novou linku
 		public void AddLine(int cityIndexFrom, int cityIndexTo)
 		{
+			//Ziskani celkoveho poctu mest
 			int citiesCount = Cities.Count();
+			//Kontrola indexu mest
 			if (cityIndexFrom < 0 || citiesCount <= cityIndexFrom) return;
 			if (cityIndexTo < 0 || citiesCount <= cityIndexTo) return;
+			//Kontrola, jestli se neshodujou indexy mest
 			if (cityIndexFrom == cityIndexTo) return;
+			//Kontrola duplicitnich linek
 			if (_Lines.Any(
 				(line) => (
 					(line.FromIndex == cityIndexFrom && line.ToIndex == cityIndexTo)
 					|| (line.FromIndex == cityIndexTo && line.ToIndex == cityIndexFrom))
 				)
 			) return;
-
+			//Ziskani mest
 			City cityA = Cities.ElementAt(cityIndexFrom);
 			City cityB = Cities.ElementAt(cityIndexTo);
-
+			//Kontrola jejich dostupnosti
 			if (!cityA.Status.Bought || !cityB.Status.Bought) return;
-
+			
+			//Vytvoreni linky
 			Line line = new(cityIndexFrom, cityIndexTo);
 			_Lines.Add(line);
 			OnLineAdded.Invoke(line);
@@ -71,8 +76,16 @@ namespace Transity.Data.Games
 		//Odebere linku
 		public void RemoveLine(Line line)
 		{
+			//Kontrola existence linky
+			if (!_Lines.Contains(line)) return;
+
 			_Lines.Remove(line);
 			OnLineRemoved(line);
+		}
+		//Game tick (kazdou vterinu)
+		public void GameTick()
+		{
+			Player.ChangeMoney(Lines.Count() * LinePayout);
 		}
 		//Ulozi hru
 		public void Save(bool updatePlayTime = true)

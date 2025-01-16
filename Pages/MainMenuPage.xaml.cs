@@ -6,37 +6,36 @@ using Transity.Pages.Games;
 
 namespace Transity.Pages
 {
-	/// <summary>
-	/// Interaction logic for MainMenuPage.xaml
-	/// </summary>
+	//Hlavni menu
 	public partial class MainMenuPage : MainWindowChild
 	{
-		//Jiz existujici instance
-		private static Dictionary<MainWindow, MainMenuPage> Instances = new();
+		//Instance teto stranky
+		private static readonly Dictionary<MainWindow, MainMenuPage> Instances = [];
 
-		//Konstruktor
+
 		public MainMenuPage(MainWindow parentWindow) : base(parentWindow)
 		{
-			//Kontrola, jestli uz neexistuje
+			//Kontrola, jestli uz neexistuje instance pro tohoto rodice
 			if (Instances.ContainsKey(parentWindow)) throw new DetailedTranslatableException(new("page-already-exists", "exceptions"));
-			//Pridani instance do seznamu
+			//Pridani sama sebe do seznamu instanci
 			Instances[parentWindow] = this;
-			//Inicializace
 			InitializeComponent();
 		}
 		//Ziska instanci stranky
 		public static MainMenuPage GetInstance(MainWindow parentWindow)
 		{
-			if (Instances.ContainsKey(parentWindow))
+			if (Instances.TryGetValue(parentWindow, out MainMenuPage? value))
 			{
 				//Instance jiz existuje, pouze ji ziskame, prelozime a vratime
-				MainMenuPage instance = Instances[parentWindow];
+				MainMenuPage instance = value;
 				instance.Preload();
 				return instance;
 			}
 			//Vytvorime novou instanci
 			return new(parentWindow);
 		}
+
+
 		//Preloader
 		public override void Preload()
 		{
@@ -44,6 +43,9 @@ namespace Transity.Pages
 			UpdateLoadGameButton();
 			UpdateContinueGameButton();
 		}
+
+
+
 		//Aktualizuje klikatelnost na tlacitko nacist hru
 		private void UpdateLoadGameButton()
 		{
@@ -54,6 +56,8 @@ namespace Transity.Pages
 		{
 			continueGameButton.IsEnabled = GamesManager.AvailableGames.Any((pair) => pair.Value.LastPlayedOn is not null);
 		}
+
+
 		//Po nacteni elementu probehne automaticky preklad
 		public void OnLoadEvent(object sender, RoutedEventArgs e)
 		{
@@ -63,12 +67,18 @@ namespace Transity.Pages
 		//Uzivatel kliknul na tlacitko pokracovat ve hre
 		public void OnContinueButtonClicked(object sender, RoutedEventArgs e)
 		{
-			//Nalezeni posledni hrane hry
-			string gameKey = GamesManager.AvailableGames.Where(
+			IEnumerable<GameInformation> availableGames = GamesManager.AvailableGames.Where(
 				(pair) => pair.Value.LastPlayedOn is not null
-			).MaxBy(
-				(pair) => pair.Value.LastPlayedOn
-			).Key;
+			).Select(
+				(pair) => pair.Value
+			);
+			//Kontrola poctu dostupnych her
+			if (!availableGames.Any()) return;
+
+			//Nalezeni posledni hrane hry
+			string gameKey = availableGames.MaxBy(
+				(information) => information.LastPlayedOn
+			)?.CodeName ?? "";
 			//Nacteni hry
 			Game game = GamesManager.LoadGame(gameKey);
 			//Nacteni rozhrani pro hru

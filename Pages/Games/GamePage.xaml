@@ -10,7 +10,7 @@
       Title="Game"
 	  Loaded="OnLoadEvent">
     <Grid>
-		<!--<Frame x:Name="overlayFrame" Content="overlay-frame" NavigationUIVisibility="Hidden" Panel.ZIndex="5"></Frame>-->
+		<Frame x:Name="overlayFrame" Content="overlay-frame" NavigationUIVisibility="Hidden" Panel.ZIndex="5"></Frame>
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" MinHeight="30px"></RowDefinition>

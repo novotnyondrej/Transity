@@ -23,7 +23,7 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition SharedSizeGroup="FullWidth"></ColumnDefinition>
 				</Grid.ColumnDefinitions>
-				<Button x:Name="continueGameButton" Style="{StaticResource RegularButton}" Content="continue-game" ui:UITranslator.ContentTranslationKey="continue-game"/>
+				<Button x:Name="continueGameButton" Style="{StaticResource RegularButton}" Content="continue-game" ui:UITranslator.ContentTranslationKey="continue-game" Click="OnContinueButtonClicked"/>
 			</Grid>
 			<Grid>
 				<Grid.ColumnDefinitions>

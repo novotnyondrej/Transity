@@ -4,43 +4,42 @@ using Transity.UI;
 
 namespace Transity.Pages
 {
-	/// <summary>
-	/// Interaction logic for UnsavedSettingsPage.xaml
-	/// </summary>
+	//Stranka s neulozenymi zmenami v nastaveni
 	public partial class UnsavedSettingsPage : MainWindowChild
 	{
-		private static Dictionary<MainWindow, UnsavedSettingsPage> Instances = new();
+		//Instance teto stranky
+		private static readonly Dictionary<MainWindow, UnsavedSettingsPage> Instances = [];
 
-		//Konstruktor
+
 		public UnsavedSettingsPage(MainWindow parentWindow) : base(parentWindow)
 		{
-			//Kontrola, jestli uz neexistuje
+			//Kontrola, jestli uz neexistuje instance pro tohoto rodice
 			if (Instances.ContainsKey(parentWindow)) throw new DetailedTranslatableException(new("page-already-exists", "exceptions"));
-			//Pridani instance do seznamu
+			//Pridani sama sebe do seznamu instanci
 			Instances[parentWindow] = this;
-			//Inicializace
 			InitializeComponent();
 		}
 		//Ziska instanci stranky
 		public static UnsavedSettingsPage GetInstance(MainWindow parentWindow)
 		{
-			if (Instances.ContainsKey(parentWindow))
+			if (Instances.TryGetValue(parentWindow, out UnsavedSettingsPage? value))
 			{
 				//Instance jiz existuje, pouze ji ziskame, prelozime a vratime
-				UnsavedSettingsPage instance = Instances[parentWindow];
+				UnsavedSettingsPage instance = value;
 				instance.Preload();
 				return instance;
 			}
 			//Vytvorime novou instanci
 			return new(parentWindow);
 		}
+
+
 		//Po nacteni elementu probehne automaticky preklad
 		public void OnLoadEvent(object sender, RoutedEventArgs e)
 		{
 			//Nacteni prekladu
 			Preload();
 		}
-
 		//Uzivatel kliknul na tlacitko zahodit zmeny
 		public void OnRevertButtonClicked(object sender, RoutedEventArgs e)
 		{

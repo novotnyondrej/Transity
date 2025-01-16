@@ -8,37 +8,36 @@ using Transity.Pages.Games;
 
 namespace Transity.Pages
 {
-	/// <summary>
-	/// Interaction logic for NewGamePage.xaml
-	/// </summary>
+	//Stranka pro vytvoreni nove hry
 	public partial class NewGamePage : MainWindowChild
 	{
-		//Jiz existujici instance
-		private static Dictionary<MainWindow, NewGamePage> Instances = new();
+		//Instance teto stranky
+		private static readonly Dictionary<MainWindow, NewGamePage> Instances = [];
 
-		//Konstruktor
+
 		public NewGamePage(MainWindow parentWindow) : base(parentWindow)
 		{
-			//Kontrola, jestli uz neexistuje
+			//Kontrola, jestli uz neexistuje instance pro tohoto rodice
 			if (Instances.ContainsKey(parentWindow)) throw new DetailedTranslatableException(new("page-already-exists", "exceptions"));
-			//Pridani instance do seznamu
+			//Pridani sama sebe do seznamu instanci
 			Instances[parentWindow] = this;
-			//Inicializace
 			InitializeComponent();
 		}
 		//Ziska instanci stranky
 		public static NewGamePage GetInstance(MainWindow parentWindow)
 		{
-			if (Instances.ContainsKey(parentWindow))
+			if (Instances.TryGetValue(parentWindow, out NewGamePage? value))
 			{
 				//Instance jiz existuje, pouze ji ziskame, prelozime a vratime
-				NewGamePage instance = Instances[parentWindow];
+				NewGamePage instance = value;
 				instance.Preload();
 				return instance;
 			}
 			//Vytvorime novou instanci
 			return new(parentWindow);
 		}
+		
+		
 		//Preloader
 		public override void Preload()
 		{
@@ -50,23 +49,8 @@ namespace Transity.Pages
 			mapHeightComboBox.SelectedIndex = 1;
 			createGameButton.IsEnabled = false;
 		}
-		//Zmena textu v policku pro nazev hry
-		public void OnGameNameChanged(object sender, RoutedEventArgs e)
-		{
-			//Tlacitko vytvorit hru je mozne zakliknout pouze pokud je vyplnen nazev hry
-			createGameButton.IsEnabled = gameNameTextbox.Text.Trim().Length >= 3;
-		}
-		//Stranka nactena
-		public void OnLoadEvent(object sender, RoutedEventArgs e)
-		{
-			//Nacteni prekladu
-			Preload();
-		}
-		//Uzivatel klikl na tlacitko zrusit
-		public void OnCancelButtonClicked(object sender, RoutedEventArgs e)
-		{
-			ParentWindow.ChangePage(MainMenuPage.GetInstance(ParentWindow));
-		}
+
+
 		//Vytvori novou hru
 		private Game CreateNewGame()
 		{
@@ -85,6 +69,25 @@ namespace Transity.Pages
 					height
 				)
 			);
+		}
+
+
+		//Stranka nactena
+		public void OnLoadEvent(object sender, RoutedEventArgs e)
+		{
+			//Nacteni prekladu
+			Preload();
+		}
+		//Zmena textu v policku pro nazev hry
+		public void OnGameNameChanged(object sender, RoutedEventArgs e)
+		{
+			//Tlacitko vytvorit hru je mozne zakliknout pouze pokud je vyplnen nazev hry
+			createGameButton.IsEnabled = gameNameTextbox.Text.Trim().Length >= 3;
+		}
+		//Uzivatel klikl na tlacitko zrusit
+		public void OnCancelButtonClicked(object sender, RoutedEventArgs e)
+		{
+			ParentWindow.ChangePage(MainMenuPage.GetInstance(ParentWindow));
 		}
 		//Uzivatel klikl na tlacitko vytvorit hru
 		public void OnCreateGameButtonClicked(object sender, RoutedEventArgs e)

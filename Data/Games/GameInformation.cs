@@ -1,8 +1,8 @@
 ﻿using System.Text.RegularExpressions;
 using Newtonsoft.Json;
-using Transity.External;
 using Transity.General;
 using Transity.General.Exceptions;
+using Transity.External;
 
 namespace Transity.Data.Games
 {
@@ -26,8 +26,10 @@ namespace Transity.Data.Games
 		public readonly MapSize MapWidth;
 		[JsonProperty("map-height")]
 		public readonly MapSize MapHeight;
+		//Datum vytvoreni hry
 		[JsonProperty("created-on")]
 		public readonly int CreatedOn;
+		//Datum posledniho momentu, kdy hrac hru hral
 		[JsonProperty("last-played-on")]
 		public int? LastPlayedOn { get; private set; }
 
@@ -77,18 +79,18 @@ namespace Transity.Data.Games
 			LastPlayedOn = null;
 		}
 		//Vyhodi hlasku pokud je neznama sirka mapy
-		private void ForceValidMapWidth(string gameName, MapSize width)
+		private static void ForceValidMapWidth(string gameName, MapSize width)
 		{
 			if (width == MapSize.Unknown) throw new TranslatableException(new("unkown-map-width", "exceptions", new() { { "game-name", gameName } }));
 		}
 		//Vyhodi hlasku pokud je neznama vyska mapy
-		private void ForceValidMapHeight(string gameName, MapSize height)
+		private static void ForceValidMapHeight(string gameName, MapSize height)
 		{
 			if (height == MapSize.Unknown) throw new TranslatableException(new("unkown-map-height", "exceptions", new() { { "game-name", gameName } }));
 		}
 
 		//Prevede seed ze stringu na integer
-		private int TranslateSeed(string? seed)
+		private static int TranslateSeed(string? seed)
 		{
 			if (seed is not null) seed = seed.Trim();
 			//Pokud nebyl seed uveden, vratime nahodny seed
@@ -99,7 +101,7 @@ namespace Transity.Data.Games
 			return seed.GetHashCode();
 		}
 		//Prevede nazev na platny kodovy nazev
-		private string ToCodeName(string name)
+		private static string ToCodeName(string name)
 		{
 			string codeName = name.Trim();
 			//Nahrazeni pripadneho podtrzitka pomlckou
@@ -120,7 +122,7 @@ namespace Transity.Data.Games
 			return codeName;
 		}
 		//Nalezne vhodne kodove jmeno pro hru
-		private string GetAvailableCodeName(string name)
+		private static string GetAvailableCodeName(string name)
 		{
 			string codeName = ToCodeName(name);
 			//Kontrola dostupnosti jmena

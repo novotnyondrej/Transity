@@ -4,8 +4,8 @@
 	internal enum MapSize
 	{
 		Unknown = 0,
-		Small = 128,
-		Medium = 256,
-		Large = 512
+		Small = 64,
+		Medium = 128,
+		Large = 256
 	}
 }

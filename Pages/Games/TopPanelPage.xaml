@@ -19,7 +19,7 @@
 			<CheckBox x:Name="createNewLineCheckbox" Content="create-new-line" ui:UITranslator.ContentTranslationKey="create-new-line" Style="{StaticResource RegularCheckBox}" Checked="OnCreateNewLineCheckboxClicked" Unchecked="OnCreateNewLineCheckboxClicked"></CheckBox>
 		</StackPanel>
 		<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-			<Button x:Name="pauseGameButton" Content="pause-game" ui:UITranslator.ContentTranslationKey="pause-game" Style="{StaticResource RegularButton}"></Button>
+			<Button x:Name="pauseGameButton" Content="pause-game" ui:UITranslator.ContentTranslationKey="pause-game" Style="{StaticResource RegularButton}" Click="OnPauseButtonClicked"></Button>
 		</StackPanel>
 	</Grid>
 </ui:GamePageChild>

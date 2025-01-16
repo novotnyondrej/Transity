@@ -1,66 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 using Transity.Data.Games;
 using Transity.General.Exceptions;
 using Transity.UI;
 
 namespace Transity.Pages.Games
 {
-	/// <summary>
-	/// Interaction logic for SidePanelPage.xaml
-	/// </summary>
+	//Postranni panel hry
 	public partial class SidePanelPage : GamePageChild
 	{
-		//Jiz existujici instance
+		//Instance teto stranky
 		private static readonly Dictionary<GamePage, SidePanelPage> Instances = [];
 
 
 		public SidePanelPage(GamePage parentPage) : base(parentPage)
 		{
-			//Kontrola, jestli uz neexistuje
+			//Kontrola, jestli uz neexistuje instance pro tohoto rodice
 			if (Instances.ContainsKey(parentPage)) throw new DetailedTranslatableException(new("page-already-exists", "exceptions"));
-			//Pridani instance do seznamu
+			//Pridani sama sebe do seznamu instanci
 			Instances[parentPage] = this;
-
 			InitializeComponent();
+			
+			//Eventy
 			parentPage.OnGameChanged += OnGameChanged;
 			parentPage.OnSelectedCityChanged += OnSelectedCityChanged;
+			parentPage.OnSelectedLineChanged += OnSelectedLineChanged;
 		}
 		//Ziska instanci stranky
 		public static SidePanelPage GetInstance(GamePage parentPage)
 		{
-			if (Instances.ContainsKey(parentPage))
+			if (Instances.TryGetValue(parentPage, out SidePanelPage? value))
 			{
 				//Instance jiz existuje, pouze ji ziskame, prelozime a vratime
-				SidePanelPage instance = Instances[parentPage];
+				SidePanelPage instance = value;
 				instance.Preload();
 				return instance;
 			}
 			//Vytvorime novou instanci
 			return new(parentPage);
 		}
-		//Po nacteni elementu probehne automaticky preklad
-		public void OnLoadEvent(object sender, RoutedEventArgs e)
-		{
-			//Nacteni prekladu
-			Preload();
-		}
+
+
+		//Reakce na zmenu hry
 		private void OnGameChanged(Game? previousGame, Game? currentGame)
 		{
 			contentFrame.Navigate(null);
 		}
+		//Reakce na zmenu oznaceneho mesta
 		private void OnSelectedCityChanged(City? previousCity, City? currentCity)
 		{
 			if (currentCity is not null)
@@ -75,6 +60,30 @@ namespace Transity.Pages.Games
 			{
 				contentFrame.Navigate(null);
 			}
+		}
+		//Reakce na zmenu oznacene linky
+		private void OnSelectedLineChanged(Line? previousLine, Line? currentLine)
+		{
+			if (currentLine is not null)
+			{
+				//Ziskani stranky
+				LineDetailPage page = LineDetailPage.GetInstance(this);
+				//Nacteni informaci o meste
+				page.LoadLineDetail(currentLine);
+				contentFrame.Navigate(page);
+			}
+			else
+			{
+				contentFrame.Navigate(null);
+			}
+		}
+
+
+		//Po nacteni elementu probehne automaticky preklad
+		public void OnLoadEvent(object sender, RoutedEventArgs e)
+		{
+			//Nacteni prekladu
+			Preload();
 		}
 	}
 }

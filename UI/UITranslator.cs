@@ -5,13 +5,14 @@ using Transity.General.Exceptions;
 
 namespace Transity.UI
 {
+	//Prekladac grafickych prvku
 	//https://stackoverflow.com/questions/5782864/adding-custom-attributes-to-an-element-in-xaml
 	internal static class UITranslator
 	{
 		//Nazev sady s preklady
-		private static readonly string TranslationSetName = "ui";
+		internal static readonly string TranslationSetName = "ui";
 
-		//Nazev prekladoveho klice pro obsah
+		//Nazev prekladoveho klice pro Content elementu
 		public static readonly DependencyProperty ContentTranslationKeyProperty = DependencyProperty.RegisterAttached(
 			"ContentTranslationKey",
 		   typeof(string),
@@ -96,9 +97,10 @@ namespace Transity.UI
 			//Preklady
 			if (element is ContentControl control)
 			{
-				//Preklad obsahu
+				//Preklad Contentu
 				if (contentTranslationKey is not null) control.Content = Translator.LoadTranslation(contentTranslationKey, targetLanguage);
 			}
+			//Preklad checkboxu
 			if (element is CheckBox checkbox)
 			{
 				if (checkbox.IsChecked == true)

@@ -1,4 +1,4 @@
-﻿<ui:SidePanelPageChild x:Class="Transity.Pages.Games.CityDetailPage"
+﻿<ui:SidePanelPageChild x:Class="Transity.Pages.Games.LineDetailPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,13 +7,12 @@
 	  xmlns:ui="clr-namespace:Transity.UI"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="CityDetail"
+      Title="LineDetail"
 	  Loaded="OnLoadEvent">
     <Grid>
 		<StackPanel>
-			<Label Content="city-detail-title" ui:UITranslator.ContentTranslationKey="city-detail-title" Style="{StaticResource Title}" HorizontalAlignment="Center"></Label>
-			<Label x:Name="cityNameLabel" Content="city-name" Style="{StaticResource RegularLabel}" HorizontalAlignment="Center"></Label>
-			<Button x:Name="buyCityButton" Content="buy-city" Style="{StaticResource RegularButton}" HorizontalAlignment="Center" Click="OnBuyButtonClicked"></Button>
+			<Label Content="line-detail-title" ui:UITranslator.ContentTranslationKey="line-detail-title" Style="{StaticResource Title}" HorizontalAlignment="Center"></Label>
+			<Button x:Name="deleteLineButton" Content="delete-line" ui:UITranslator.ContentTranslationKey="delete-line" Style="{StaticResource RegularButton}" HorizontalAlignment="Center" Click="OnDeleteLineButtonClicked"></Button>
 		</StackPanel>
     </Grid>
 </ui:SidePanelPageChild>

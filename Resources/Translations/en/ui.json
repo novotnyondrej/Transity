@@ -36,5 +36,12 @@
 	"pause-game" : "Pause",
 	"city-detail-title" : "City detail",
 	"buy-city" : "Buy for ${city-price}",
-	"create-new-line" : "Create new line"
+	"create-new-line" : "Create new line",
+	"city" : "City {city-index}",
+	"line-detail-title" : "Line detail",
+	"delete-line" : "Delete line",
+	"game-paused-title" : "Game paused",
+	"resume-game" : "Resume game",
+	"save-game" : "Save game",
+	"exit-to-main-menu" : "Exit to main menu"
 }

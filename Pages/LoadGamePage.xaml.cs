@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using Transity.Content;
-using Transity.Data;
 using Transity.Data.Games;
 using Transity.General;
 using Transity.General.Exceptions;
@@ -15,36 +9,35 @@ using Transity.UI;
 
 namespace Transity.Pages
 {
-	/// <summary>
-	/// Interaction logic for LoadGamePage.xaml
-	/// </summary>
+	//Stranka pro nacteni hry
 	public partial class LoadGamePage : MainWindowChild
 	{
-		//Jiz existujici instance
-		private static Dictionary<MainWindow, LoadGamePage> Instances = new();
+		//Instance teto stranky
+		private static readonly Dictionary<MainWindow, LoadGamePage> Instances = [];
 
 		public LoadGamePage(MainWindow parentWindow) : base(parentWindow)
 		{
-			//Kontrola, jestli uz neexistuje
+			//Kontrola, jestli uz neexistuje instance pro tohoto rodice
 			if (Instances.ContainsKey(parentWindow)) throw new DetailedTranslatableException(new("page-already-exists", "exceptions"));
-			//Pridani instance do seznamu
+			//Pridani sama sebe do seznamu instanci
 			Instances[parentWindow] = this;
-			//Inicializace
 			InitializeComponent();
 		}
 		//Ziska instanci stranky
 		public static LoadGamePage GetInstance(MainWindow parentWindow)
 		{
-			if (Instances.ContainsKey(parentWindow))
+			if (Instances.TryGetValue(parentWindow, out LoadGamePage? value))
 			{
 				//Instance jiz existuje, pouze ji ziskame, prelozime a vratime
-				LoadGamePage instance = Instances[parentWindow];
+				LoadGamePage instance = value;
 				instance.Preload();
 				return instance;
 			}
 			//Vytvorime novou instanci
 			return new(parentWindow);
 		}
+		
+		
 		//Preloader
 		public override void Preload()
 		{
@@ -66,13 +59,13 @@ namespace Transity.Pages
 				string createTime = TimeConverter.ToTimestamp(information.CreatedOn);
 				string lastPlayTime = (
 					information.LastPlayedOn is null
-					? Translator.LoadTranslation(new("never-played", "ui"))
+					? Translator.LoadTranslation(new("never-played", UITranslator.TranslationSetName))
 					: TimeConverter.ToTimestamp((int)information.LastPlayedOn)
 				);
 				//Nacteni prekladu
 				string text = Translator.LoadTranslation(new(
 					"game-item",
-					"ui",
+					UITranslator.TranslationSetName,
 					new()
 					{
 						{ "game-name", name },
@@ -109,6 +102,8 @@ namespace Transity.Pages
 				gamesListBox.Items.Remove(outdatedGameItem);
 			}
 		}
+		
+		
 		//Stranka nactena
 		public void OnLoadEvent(object sender, RoutedEventArgs e)
 		{

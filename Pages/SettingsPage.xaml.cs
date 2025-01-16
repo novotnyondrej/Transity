@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Transity.Content;
 using Transity.Data;
 using Transity.General.Exceptions;
@@ -19,45 +7,33 @@ using Transity.UI;
 
 namespace Transity.Pages
 {
-	/// <summary>
-	/// Interaction logic for SettingsPage.xaml
-	/// </summary>
+	//Stranka s nastavenim aplikace
 	public partial class SettingsPage : MainWindowChild
 	{
-		//Jiz existujici instance
-		private static Dictionary<MainWindow, SettingsPage> Instances = new();
+		//Instance teto stranky
+		private static readonly Dictionary<MainWindow, SettingsPage> Instances = [];
 		
-		//Konstruktor
+
 		public SettingsPage(MainWindow parentWindow) : base(parentWindow)
 		{
-			//Kontrola, jestli uz neexistuje
+			//Kontrola, jestli uz neexistuje instance pro tohoto rodice
 			if (Instances.ContainsKey(parentWindow)) throw new DetailedTranslatableException(new("page-already-exists", "exceptions"));
-			//Pridani instance do seznamu
+			//Pridani sama sebe do seznamu instanci
 			Instances[parentWindow] = this;
-			//Inicializace
 			InitializeComponent();
 		}
 		//Ziska instanci stranky
 		public static SettingsPage GetInstance(MainWindow parentWindow, bool forceUpdate = true)
 		{
-			if (Instances.ContainsKey(parentWindow))
+			if (Instances.TryGetValue(parentWindow, out SettingsPage? value))
 			{
 				//Instance jiz existuje, pouze ji ziskame, prelozime a vratime
-				SettingsPage instance = Instances[parentWindow];
+				SettingsPage instance = value;
 				if (forceUpdate) instance.Preload();
 				return instance;
 			}
 			//Vytvorime novou instanci
 			return new(parentWindow);
-		}
-		//Po nacteni elementu probehne automaticky preklad
-		public void OnLoadEvent(object sender, RoutedEventArgs e)
-		{
-			//Odebrani predloh
-			primaryLanguageComboBox.Items.Remove(primaryLanguageItemTemplate);
-			secondaryLanguageComboBox.Items.Remove(secondaryLanguageItemTemplate);
-			//Nacteni prekladu
-			Preload();
 		}
 
 
@@ -108,6 +84,8 @@ namespace Transity.Pages
 			loadTranslationsOnStartupCheckbox.IsChecked = AppSettings.UserSettings.LoadTranslationsOnStartup;
 			loadPagesOnStartupCheckbox.IsChecked = AppSettings.UserSettings.LoadPagesOnStartup;
 		}
+
+
 		//Vyhodnoti, zda bylo nastaveni upraveno
 		private bool SettingsModified()
 		{
@@ -131,6 +109,15 @@ namespace Transity.Pages
 		}
 
 
+		//Po nacteni elementu probehne automaticky preklad
+		public void OnLoadEvent(object sender, RoutedEventArgs e)
+		{
+			//Odebrani predloh
+			primaryLanguageComboBox.Items.Remove(primaryLanguageItemTemplate);
+			secondaryLanguageComboBox.Items.Remove(secondaryLanguageItemTemplate);
+			//Nacteni prekladu
+			Preload();
+		}
 		//Zaskrtnute policko s nacitanim jazyka pri spusteni
 		public void OnTranslationsCheckboxChecked(object sender, RoutedEventArgs e)
 		{
